@@ -47,13 +47,16 @@ export default function Navbar({
       <div className="mx-auto flex max-w-7xl h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         
         {/* Logo / Name */}
-        <a href="#hero" className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-500 font-bold text-black font-sans text-base">
-            AF
+        <a href="#hero" className="flex items-center gap-3 group">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-teal-500 to-cyan-400 font-extrabold text-black font-sans text-xs tracking-wider shadow-lg shadow-teal-500/10 group-hover:shadow-teal-500/30 transition-all">
+            AS
           </div>
-          <span className="hidden sm:inline font-sans text-sm font-bold tracking-tight text-white hover:text-teal-400 transition-colors">
-            {lang === 'en' ? 'A. Fathy Sherief' : 'أ. فتحي شريف'}
-          </span>
+          <div className="flex flex-col">
+            <span className="font-sans text-xs font-bold tracking-tight text-white hover:text-teal-400 transition-colors leading-none">
+              {lang === 'en' ? 'Abdelrahman Sherief' : 'عبد الرحمن شريف'}
+            </span>
+            <span className="text-[9px] font-mono text-zinc-500 mt-0.5 leading-none">Senior Quality Engineer</span>
+          </div>
         </a>
 
         {/* Desktop Navigation */}
@@ -71,6 +74,14 @@ export default function Navbar({
 
         {/* Action Controls */}
         <div className="flex items-center gap-2.5">
+          {/* Resume Pill Button */}
+          <a
+            href="#about"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all"
+          >
+            <span>{lang === 'en' ? 'Resume ↗' : 'السيرة الذاتية ↗'}</span>
+          </a>
+
           {/* Export Data Button */}
           <button
             onClick={onExportData}

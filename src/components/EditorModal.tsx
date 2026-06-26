@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { X, Save, Plus, Trash2, Upload, FileText, Layout, ListPlus, Database, Eye } from 'lucide-react';
-import { PortfolioData, Project, Skill, Service, Metric } from '../types';
+import React, { useState, useEffect } from 'react';
+import { X, Save, Plus, Trash2, Upload, FileText, Layout, ListPlus, Database, Award, GraduationCap, Briefcase, Sparkles, AlertCircle } from 'lucide-react';
+import { PortfolioData, Project, Skill, Service, Metric, Achievement, EducationItem, CertificateItem } from '../types';
 
 interface EditorModalProps {
   data: PortfolioData;
@@ -14,6 +14,8 @@ interface EditorModalProps {
   setIsAddingProject: (isAdding: boolean) => void;
 }
 
+type TabType = 'bio' | 'achievements' | 'services' | 'skills' | 'projects' | 'edu_certs';
+
 export default function EditorModal({
   data,
   setData,
@@ -25,7 +27,7 @@ export default function EditorModal({
   isAddingProject,
   setIsAddingProject
 }: EditorModalProps) {
-  const [activeTab, setActiveTab] = useState<'bio' | 'projects' | 'skills' | 'services'>('bio');
+  const [activeTab, setActiveTab] = useState<TabType>('bio');
 
   // Bio state inputs
   const [nameEn, setNameEn] = useState(data.profile.name.en);
@@ -36,6 +38,46 @@ export default function EditorModal({
   const [valPropAr, setValPropAr] = useState(data.profile.valueProposition.ar);
   const [aboutEn, setAboutEn] = useState(data.profile.aboutMe.en);
   const [aboutAr, setAboutAr] = useState(data.profile.aboutMe.ar);
+  const [phone, setPhone] = useState(data.profile.phone);
+  const [email, setEmail] = useState(data.profile.email);
+  const [linkedin, setLinkedin] = useState(data.profile.linkedin);
+  const [avatar, setAvatar] = useState(data.profile.avatar);
+
+  // Lists states for local edits before save
+  const [achievements, setAchievements] = useState<Achievement[]>([]);
+  const [skills, setSkills] = useState<Skill[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [education, setEducation] = useState<EducationItem[]>([]);
+  const [certificates, setCertificates] = useState<CertificateItem[]>([]);
+
+  // Sync state with incoming props on load or tab shift
+  useEffect(() => {
+    if (isOpen) {
+      setNameEn(data.profile.name.en);
+      setNameAr(data.profile.name.ar);
+      setHeadlineEn(data.profile.headline.en);
+      setHeadlineAr(data.profile.headline.ar);
+      setValPropEn(data.profile.valueProposition.en);
+      setValPropAr(data.profile.valueProposition.ar);
+      setAboutEn(data.profile.aboutMe.en);
+      setAboutAr(data.profile.aboutMe.ar);
+      setPhone(data.profile.phone);
+      setEmail(data.profile.email);
+      setLinkedin(data.profile.linkedin);
+      setAvatar(data.profile.avatar);
+
+      setAchievements([...data.achievements]);
+      setSkills([...data.skills]);
+      setServices([...data.services]);
+      setEducation([...data.education]);
+      setCertificates([...data.certificates]);
+    }
+  }, [isOpen, data]);
+
+  // Skill Adding Form State
+  const [newSkillName, setNewSkillName] = useState('');
+  const [newSkillLevel, setNewSkillLevel] = useState<'Expert' | 'Advanced' | 'Intermediate'>('Expert');
+  const [newSkillCategory, setNewSkillCategory] = useState<'data' | 'bi' | 'automation' | 'quality' | 'languages'>('data');
 
   // New Project Form State
   const emptyProjectForm = () => ({
@@ -53,7 +95,7 @@ export default function EditorModal({
   const [projectForm, setProjectForm] = useState(emptyProjectForm());
 
   // Initialize form when editing a project
-  React.useEffect(() => {
+  useEffect(() => {
     if (editingProject) {
       setActiveTab('projects');
       setProjectForm({
@@ -92,18 +134,35 @@ export default function EditorModal({
     const updated = {
       ...data,
       profile: {
-        ...data.profile,
         name: { en: nameEn, ar: nameAr },
         headline: { en: headlineEn, ar: headlineAr },
         valueProposition: { en: valPropEn, ar: valPropAr },
-        aboutMe: { en: aboutEn, ar: aboutAr }
+        aboutMe: { en: aboutEn, ar: aboutAr },
+        avatar: avatar,
+        email: email,
+        phone: phone,
+        linkedin: linkedin
       }
     };
     setData(updated);
-    alert(lang === 'en' ? 'Profile details saved successfully!' : 'تم حفظ السيرة الذاتية بنجاح!');
+    alert(lang === 'en' ? 'Profile details saved successfully!' : 'تم حفظ السيرة الذاتية ومعلومات الاتصال بنجاح!');
   };
 
-  // Convert uploaded image to base64 data url
+  // Convert uploaded image to base64 data url for profile photo
+  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      if (event.target?.result) {
+        setAvatar(event.target.result as string);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  // Convert uploaded image to base64 data url for project thumbnail
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -159,7 +218,96 @@ export default function EditorModal({
     setIsAddingProject(false);
     setProjectForm(emptyProjectForm());
 
-    alert(lang === 'en' ? 'Project saved successfully!' : 'تم حفظ المشروع وتحديث المعرض!');
+    alert(lang === 'en' ? 'Project saved successfully!' : 'تم حفظ المشروع وتحديث المعرض بنجاح!');
+  };
+
+  // Save Achievements list
+  const handleSaveAchievements = () => {
+    setData({
+      ...data,
+      achievements: achievements
+    });
+    alert(lang === 'en' ? 'Key achievements updated!' : 'تم حفظ الإنجازات والأرقام القياسية!');
+  };
+
+  // Add a technical skill
+  const handleAddSkill = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newSkillName.trim()) return;
+
+    const levelArMap = {
+      'Expert': 'خبير',
+      'Advanced': 'متقدم',
+      'Intermediate': 'متوسط'
+    };
+
+    const newSkill: Skill = {
+      id: `sk_${Date.now()}`,
+      name: newSkillName.trim(),
+      level: newSkillLevel,
+      levelAr: levelArMap[newSkillLevel],
+      category: newSkillCategory
+    };
+
+    const updatedSkills = [...skills, newSkill];
+    setSkills(updatedSkills);
+    setData({
+      ...data,
+      skills: updatedSkills
+    });
+
+    setNewSkillName('');
+    alert(lang === 'en' ? 'Skill added successfully!' : 'تم إضافة المهارة الفنية الجديدة!');
+  };
+
+  // Delete a skill
+  const handleDeleteSkill = (id: string) => {
+    const updatedSkills = skills.filter(s => s.id !== id);
+    setSkills(updatedSkills);
+    setData({
+      ...data,
+      skills: updatedSkills
+    });
+  };
+
+  // Save Service updates
+  const handleSaveServices = () => {
+    setData({
+      ...data,
+      services: services
+    });
+    alert(lang === 'en' ? 'Services solutions saved!' : 'تم حفظ وتحديث الخدمات بنجاح!');
+  };
+
+  // Handle service bullet point edit
+  const handleEditServiceBullet = (srvIdx: number, itemIdx: number, val: string, fieldLang: 'en' | 'ar') => {
+    const nextServices = [...services];
+    nextServices[srvIdx].items[itemIdx][fieldLang] = val;
+    setServices(nextServices);
+  };
+
+  // Add bullet point to service
+  const handleAddServiceBullet = (srvIdx: number) => {
+    const nextServices = [...services];
+    nextServices[srvIdx].items.push({ en: 'New Service Item', ar: 'بند خدمة جديد' });
+    setServices(nextServices);
+  };
+
+  // Delete bullet point from service
+  const handleDeleteServiceBullet = (srvIdx: number, itemIdx: number) => {
+    const nextServices = [...services];
+    nextServices[srvIdx].items.splice(itemIdx, 1);
+    setServices(nextServices);
+  };
+
+  // Save Education and Certs
+  const handleSaveEduCerts = () => {
+    setData({
+      ...data,
+      education: education,
+      certificates: certificates
+    });
+    alert(lang === 'en' ? 'Education & Credentials saved!' : 'تم حفظ المؤهلات الأكاديمية والشهادات المهنية!');
   };
 
   return (
@@ -167,7 +315,7 @@ export default function EditorModal({
       <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl relative">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 shrink-0">
           <div className="flex items-center gap-2">
             <Layout className="text-teal-400" size={18} />
             <h3 className="text-md sm:text-lg font-bold text-white font-sans">
@@ -187,36 +335,110 @@ export default function EditorModal({
           </button>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex border-b border-zinc-800/60 bg-zinc-950/40 p-2 text-xs">
+        {/* Navigation Tabs - Fully Expanded Scrollable Row */}
+        <div className="flex overflow-x-auto border-b border-zinc-800/60 bg-zinc-950/40 p-2 text-xs shrink-0 scrollbar-thin">
           <button
-            onClick={() => setActiveTab('bio')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${activeTab === 'bio' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            onClick={() => { setActiveTab('bio'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'bio' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             <FileText size={14} />
-            <span>{lang === 'en' ? 'Bio & Headline' : 'النبذة والكلمة الافتتاحية'}</span>
+            <span>{lang === 'en' ? 'Bio & Contact' : 'النبذة والاتصال'}</span>
           </button>
+
           <button
-            onClick={() => setActiveTab('projects')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${activeTab === 'projects' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            onClick={() => { setActiveTab('projects'); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'projects' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
           >
             <ListPlus size={14} />
-            <span>{lang === 'en' ? 'Case Studies / Projects' : 'المشاريع وقصص النجاح'}</span>
+            <span>{lang === 'en' ? 'Projects' : 'المشاريع وقصص النجاح'}</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('skills'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'skills' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+          >
+            <Database size={14} />
+            <span>{lang === 'en' ? 'Skills Matrix' : 'المهارات الفنية'}</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('services'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'services' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+          >
+            <Sparkles size={14} />
+            <span>{lang === 'en' ? 'Services' : 'الخدمات والحلول'}</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('achievements'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'achievements' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+          >
+            <Briefcase size={14} />
+            <span>{lang === 'en' ? 'Highlights' : 'الأرقام والإنجازات'}</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('edu_certs'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'edu_certs' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+          >
+            <Award size={14} />
+            <span>{lang === 'en' ? 'Education & Certs' : 'الشهادات والمؤهلات'}</span>
           </button>
         </div>
 
         {/* Content Scroll Area */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
           
-          {/* TAB 1: BIO & HEADLINE */}
+          {/* TAB 1: BIO & CONTACT */}
           {activeTab === 'bio' && (
             <div className="space-y-6 animate-fade-in" id="edit_tab_bio">
               
-              {/* Note */}
-              <div className="p-3 bg-teal-950/25 border border-teal-800/30 text-teal-400 rounded-xl text-[11px] leading-relaxed">
-                {lang === 'en' 
-                  ? 'All input fields support dual languages. Edit English and Arabic counterparts to ensure a seamless language toggle for site visitors.' 
-                  : 'جميع الحقول تدعم الازدواج اللغوي. يرجى ملء البيانات باللغتين الإنجليزية والعربية لتسهيل التصفح للزوار.'}
+              <div className="p-3 bg-teal-950/25 border border-teal-800/30 text-teal-400 rounded-xl text-[11px] leading-relaxed flex items-center gap-2">
+                <AlertCircle size={16} />
+                <span>
+                  {lang === 'en' 
+                    ? 'Edit profile metadata, contact shortcuts, and portrait photo. These load instantly in the hero banner and page footer.' 
+                    : 'قم بتعديل السيرة الذاتية، ومنافذ التواصل المباشر، وصورتك الشخصية. سيتم تحديثها فورًا.'}
+                </span>
+              </div>
+
+              {/* Photo Upload Row */}
+              <div className="bg-zinc-950/40 border border-zinc-800/60 p-4 rounded-xl space-y-3">
+                <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider block">Profile Photo (Hero & About)</label>
+                <div className="flex items-center gap-4">
+                  <div className="h-16 w-16 rounded-xl border border-zinc-800 overflow-hidden bg-zinc-950 shrink-0">
+                    {avatar ? (
+                      <img src={avatar} alt="Profile Avatar" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-500 italic">No Photo</div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-zinc-850 bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 font-semibold cursor-pointer transition-all">
+                        <Upload size={12} className="text-teal-500" />
+                        <span>{lang === 'en' ? 'Upload Photo' : 'رفع صورة'}</span>
+                        <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+                      </label>
+                      {avatar && (
+                        <button
+                          type="button"
+                          onClick={() => setAvatar('')}
+                          className="text-xs text-rose-400 hover:text-rose-300 font-medium"
+                        >
+                          {lang === 'en' ? 'Reset to default' : 'إعادة الافتراضي'}
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      placeholder={lang === 'en' ? 'Or paste custom image URL' : 'أو الصق رابط صورة خارجي'}
+                      value={avatar}
+                      onChange={(e) => setAvatar(e.target.value)}
+                      className="w-full bg-zinc-950 border border-zinc-850 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-teal-500/50 outline-none max-w-md"
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Names */}
@@ -236,7 +458,7 @@ export default function EditorModal({
                     type="text"
                     value={nameAr}
                     onChange={(e) => setNameAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right font-sans"
                   />
                 </div>
               </div>
@@ -244,7 +466,7 @@ export default function EditorModal({
               {/* Headline */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Headline / Role (EN)</label>
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Headline / Professional Title (EN)</label>
                   <input
                     type="text"
                     value={headlineEn}
@@ -253,12 +475,43 @@ export default function EditorModal({
                   />
                 </div>
                 <div className="space-y-1.5 text-right">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">المسمى الوظيفي واللقب (AR)</label>
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">المسمى واللقب المهني (AR)</label>
                   <input
                     type="text"
                     value={headlineAr}
                     onChange={(e) => setHeadlineAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right font-sans"
+                  />
+                </div>
+              </div>
+
+              {/* Contact Information */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-zinc-950/20 border border-zinc-800/40 p-4 rounded-xl">
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Email Address</label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-teal-500/50"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Phone number</label>
+                  <input
+                    type="text"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-teal-500/50"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">LinkedIn Profile URL</label>
+                  <input
+                    type="url"
+                    value={linkedin}
+                    onChange={(e) => setLinkedin(e.target.value)}
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-teal-500/50"
                   />
                 </div>
               </div>
@@ -275,12 +528,12 @@ export default function EditorModal({
                   />
                 </div>
                 <div className="space-y-1.5 text-right">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">القيمة المضافة ورسالة العمل (AR)</label>
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">رسالة القيمة المضافة المحققة (AR)</label>
                   <textarea
                     rows={3}
                     value={valPropAr}
                     onChange={(e) => setValPropAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right font-sans"
                   />
                 </div>
               </div>
@@ -288,7 +541,7 @@ export default function EditorModal({
               {/* About Me */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">About Me Paragraphs (EN)</label>
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">About Me / Profile Summary (EN)</label>
                   <textarea
                     rows={6}
                     value={aboutEn}
@@ -297,12 +550,12 @@ export default function EditorModal({
                   />
                 </div>
                 <div className="space-y-1.5 text-right">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">نبذة تفصيلية عن مسيرتي وأهدافي (AR)</label>
+                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">الملخص المهني الكامل وسيرة العمل (AR)</label>
                   <textarea
                     rows={6}
                     value={aboutAr}
                     onChange={(e) => setAboutAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none text-right scrollbar-thin"
+                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none text-right scrollbar-thin font-sans"
                   />
                 </div>
               </div>
@@ -312,10 +565,10 @@ export default function EditorModal({
                 <button
                   type="button"
                   onClick={handleSaveBio}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-black font-semibold text-xs cursor-pointer shadow-md transition-all"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-black font-bold text-xs cursor-pointer shadow-md transition-all"
                 >
                   <Save size={14} />
-                  <span>{lang === 'en' ? 'Save Biography Info' : 'حفظ التغييرات'}</span>
+                  <span>{lang === 'en' ? 'Save Bio & Contact' : 'حفظ التعديلات'}</span>
                 </button>
               </div>
 
@@ -326,7 +579,6 @@ export default function EditorModal({
           {activeTab === 'projects' && (
             <div className="space-y-6 animate-fade-in" id="edit_tab_projects">
               
-              {/* Sub-Header context */}
               <div className="flex justify-between items-center pb-3 border-b border-zinc-800/60">
                 <div>
                   <h4 className="text-sm font-bold text-white font-sans">
@@ -336,11 +588,6 @@ export default function EditorModal({
                         ? (lang === 'en' ? 'Add New Project Case Study' : 'إضافة دراسة حالة مشروع جديد')
                         : (lang === 'en' ? 'Select or Create Case Study' : 'تعديل أو إضافة المشاريع')}
                   </h4>
-                  <p className="text-[10px] text-zinc-500 font-sans mt-0.5">
-                    {lang === 'en' 
-                      ? 'Add high-impact descriptions highlighting: Problem, Solution, and numerical Results.' 
-                      : 'أضف تفاصيل قوية تسلط الضوء على: المشكلة، الحل الذكي، والنتيجة بالأرقام ملموسة.'}
-                  </p>
                 </div>
 
                 {(editingProject || isAddingProject) && (
@@ -356,7 +603,6 @@ export default function EditorModal({
                 )}
               </div>
 
-              {/* LIST PROJECTS IF NOT CURRENTLY EDITING/ADDING */}
               {!editingProject && !isAddingProject ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4" id="editor_projects_list">
                   {data.projects.map((proj) => (
@@ -391,14 +637,11 @@ export default function EditorModal({
                     className="col-span-full py-8 border-2 border-dashed border-zinc-800 hover:border-teal-500/30 bg-zinc-950/30 hover:bg-teal-500/[0.02] rounded-xl flex flex-col items-center justify-center gap-2 text-zinc-500 hover:text-teal-400 transition-all cursor-pointer"
                   >
                     <Plus size={20} />
-                    <span className="text-xs font-semibold">{lang === 'en' ? 'Add Another High-Impact Project' : 'إضافة دراسة حالة لمشروع جديد'}</span>
+                    <span className="text-xs font-semibold">{lang === 'en' ? 'Add New Project' : 'إضافة دراسة حالة لمشروع جديد'}</span>
                   </button>
                 </div>
               ) : (
-                /* ACTUAL PROJECT FORM FOR EDITING OR ADDING */
                 <form onSubmit={handleSaveProject} className="space-y-6" id="editor_project_form">
-                  
-                  {/* Title & Category Row */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Project Title (EN)</label>
@@ -417,12 +660,11 @@ export default function EditorModal({
                         required
                         value={projectForm.titleAr}
                         onChange={(e) => setProjectForm({ ...projectForm, titleAr: e.target.value })}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right font-sans"
                       />
                     </div>
                   </div>
 
-                  {/* Category */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Category (EN) - e.g. "Process Automation"</label>
@@ -441,12 +683,11 @@ export default function EditorModal({
                         required
                         value={projectForm.catAr}
                         onChange={(e) => setProjectForm({ ...projectForm, catAr: e.target.value })}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right font-sans"
                       />
                     </div>
                   </div>
 
-                  {/* Problem Description */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">The Problem Statement (EN)</label>
@@ -465,12 +706,11 @@ export default function EditorModal({
                         required
                         value={projectForm.probAr}
                         onChange={(e) => setProjectForm({ ...projectForm, probAr: e.target.value })}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right font-sans"
                       />
                     </div>
                   </div>
 
-                  {/* Solution Description */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">The Solution Provided (EN)</label>
@@ -489,15 +729,14 @@ export default function EditorModal({
                         required
                         value={projectForm.solAr}
                         onChange={(e) => setProjectForm({ ...projectForm, solAr: e.target.value })}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right font-sans"
                       />
                     </div>
                   </div>
 
-                  {/* Results Description */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">The Results & Impact in numbers (EN)</label>
+                      <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">The Results & Impact (EN)</label>
                       <textarea
                         rows={3}
                         required
@@ -507,23 +746,21 @@ export default function EditorModal({
                       />
                     </div>
                     <div className="space-y-1.5 text-right">
-                      <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">النتائج والوفر المحقق بالأرقام (AR)</label>
+                      <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">النتائج والوفر المحقق (AR)</label>
                       <textarea
                         rows={3}
                         required
                         value={projectForm.resAr}
                         onChange={(e) => setProjectForm({ ...projectForm, resAr: e.target.value })}
-                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right"
+                        className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right font-sans"
                       />
                     </div>
                   </div>
 
-                  {/* Metrics Blocks (Three Cards) */}
                   <div className="space-y-3 pt-3 border-t border-zinc-800/40">
                     <h5 className="text-[11px] font-mono font-bold text-zinc-400 uppercase tracking-wider">Key Metrics Statistics (Up to 3 blocks)</h5>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       
-                      {/* Metric 1 */}
                       <div className="p-3 bg-zinc-950/60 border border-zinc-850 rounded-xl space-y-2">
                         <span className="text-[9px] font-mono text-zinc-500">METRIC #1</span>
                         <input
@@ -537,7 +774,7 @@ export default function EditorModal({
                         <input
                           type="text"
                           required
-                          placeholder="Label EN (e.g. Response Speed)"
+                          placeholder="Label EN"
                           value={projectForm.metric1LabelEn}
                           onChange={(e) => setProjectForm({ ...projectForm, metric1LabelEn: e.target.value })}
                           className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-[11px] text-white outline-none"
@@ -548,11 +785,10 @@ export default function EditorModal({
                           placeholder="العنوان بالعربية"
                           value={projectForm.metric1LabelAr}
                           onChange={(e) => setProjectForm({ ...projectForm, metric1LabelAr: e.target.value })}
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-[11px] text-white text-right outline-none"
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-[11px] text-white text-right outline-none font-sans"
                         />
                       </div>
 
-                      {/* Metric 2 */}
                       <div className="p-3 bg-zinc-950/60 border border-zinc-850 rounded-xl space-y-2">
                         <span className="text-[9px] font-mono text-zinc-500">METRIC #2</span>
                         <input
@@ -577,11 +813,10 @@ export default function EditorModal({
                           placeholder="العنوان بالعربية"
                           value={projectForm.metric2LabelAr}
                           onChange={(e) => setProjectForm({ ...projectForm, metric2LabelAr: e.target.value })}
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-[11px] text-white text-right outline-none"
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-[11px] text-white text-right outline-none font-sans"
                         />
                       </div>
 
-                      {/* Metric 3 */}
                       <div className="p-3 bg-zinc-950/60 border border-zinc-850 rounded-xl space-y-2">
                         <span className="text-[9px] font-mono text-zinc-500">METRIC #3</span>
                         <input
@@ -606,37 +841,27 @@ export default function EditorModal({
                           placeholder="العنوان بالعربية"
                           value={projectForm.metric3LabelAr}
                           onChange={(e) => setProjectForm({ ...projectForm, metric3LabelAr: e.target.value })}
-                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-[11px] text-white text-right outline-none"
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2.5 py-1.5 text-[11px] text-white text-right outline-none font-sans"
                         />
                       </div>
 
                     </div>
                   </div>
 
-                  {/* Media uploads (Image & Video URL) */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-3 border-t border-zinc-800/40">
-                    
-                    {/* Image Uploader */}
                     <div className="space-y-2">
-                      <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Project Cover Image</label>
+                      <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider block">Project Cover Image</label>
                       <div className="flex flex-col gap-2.5">
                         <div className="flex items-center gap-3">
-                          <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-zinc-800 bg-zinc-950 hover:bg-zinc-900 text-xs text-zinc-300 font-semibold cursor-pointer select-none transition-all">
+                          <label className="flex items-center gap-2 px-4 py-2 rounded-xl border border-zinc-800 bg-zinc-950 hover:bg-zinc-900 text-xs text-zinc-300 font-semibold cursor-pointer select-none transition-all">
                             <Upload size={14} className="text-teal-500" />
                             <span>{lang === 'en' ? 'Upload Image File' : 'رفع ملف صورة'}</span>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={handleImageUpload}
-                              className="hidden"
-                            />
+                            <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
                           </label>
-                          <span className="text-[10px] text-zinc-500">{lang === 'en' ? 'PNG, JPG, or GIF support' : 'يدعم صيغ الصور المختلفة'}</span>
                         </div>
-                        {/* Optional manual URL input */}
                         <input
                           type="text"
-                          placeholder={lang === 'en' ? 'Or paste external image URL' : 'أو الصق رابط صورة خارجي'}
+                          placeholder={lang === 'en' ? 'Or paste image URL' : 'أو الصق رابط صورة خارجي'}
                           value={projectForm.imageSrc.startsWith('data:') ? '' : projectForm.imageSrc}
                           onChange={(e) => setProjectForm({ ...projectForm, imageSrc: e.target.value })}
                           className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none"
@@ -653,7 +878,6 @@ export default function EditorModal({
                       </div>
                     </div>
 
-                    {/* Video URL (Optional Embed) */}
                     <div className="space-y-2">
                       <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Project Video Embed (Optional URL)</label>
                       <input
@@ -663,16 +887,9 @@ export default function EditorModal({
                         onChange={(e) => setProjectForm({ ...projectForm, videoUrl: e.target.value })}
                         className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-white focus:border-teal-500/50 outline-none"
                       />
-                      <p className="text-[10px] text-zinc-500 leading-normal">
-                        {lang === 'en' 
-                          ? 'Paste a YouTube or Vimeo embedded player URL (e.g. https://www.youtube.com/embed/dQw4w9WgXcQ) to feature an interactive player in the details modal.' 
-                          : 'الصق رابط مشغل فيديو مضمن (embed) لعرض مقاطع الفيديو وشرح المشاريع والأنظمة للزوار.'}
-                      </p>
                     </div>
-
                   </div>
 
-                  {/* Submit Button */}
                   <div className="flex justify-end pt-5 border-t border-zinc-800/40">
                     <button
                       type="submit"
@@ -682,9 +899,480 @@ export default function EditorModal({
                       <span>{lang === 'en' ? 'Save Project Details' : 'حفظ ونشر المشروع'}</span>
                     </button>
                   </div>
-
                 </form>
               )}
+            </div>
+          )}
+
+          {/* TAB 3: SKILLS MATRIX */}
+          {activeTab === 'skills' && (
+            <div className="space-y-6 animate-fade-in" id="edit_tab_skills">
+              
+              {/* Add skill form */}
+              <form onSubmit={handleAddSkill} className="bg-zinc-950/40 border border-zinc-800/60 p-4 rounded-xl space-y-4">
+                <h4 className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">Add Technical Skill</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+                  <div className="space-y-1.5 sm:col-span-2">
+                    <label className="text-[10px] text-zinc-500 font-mono">SKILL NAME (e.g. "Power Pivot")</label>
+                    <input
+                      type="text"
+                      required
+                      value={newSkillName}
+                      onChange={(e) => setNewSkillName(e.target.value)}
+                      placeholder="Skill name"
+                      className="w-full bg-zinc-900 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] text-zinc-500 font-mono">LEVEL</label>
+                    <select
+                      value={newSkillLevel}
+                      onChange={(e) => setNewSkillLevel(e.target.value as any)}
+                      className="w-full bg-zinc-900 border border-zinc-850 rounded-lg px-3 py-2 text-xs text-white outline-none focus:border-teal-500/50"
+                    >
+                      <option value="Expert">Expert / خبير</option>
+                      <option value="Advanced">Advanced / متقدم</option>
+                      <option value="Intermediate">Intermediate / متوسط</option>
+                    </select>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-400 text-black font-bold text-xs cursor-pointer transition-all h-[36px]"
+                  >
+                    <Plus size={14} />
+                    <span>{lang === 'en' ? 'Add Skill' : 'إضافة المهارة'}</span>
+                  </button>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-[10px] text-zinc-500 font-mono block">CATEGORY</label>
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    {[
+                      { value: 'data', label: 'Data Cleaning & ETL / تنظيف ومعالجة البيانات' },
+                      { value: 'bi', label: 'BI & Modeling / ذكاء الأعمال والنمذجة' },
+                      { value: 'automation', label: 'Process Automation / أتمتة العمليات' },
+                      { value: 'quality', label: 'Quality & Statistics / الجودة والإحصاء' },
+                      { value: 'languages', label: 'Query Languages / لغات الاستعلام والبرمجة' }
+                    ].map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setNewSkillCategory(opt.value as any)}
+                        className={`px-3 py-1.5 rounded-lg border text-[11px] transition-all ${newSkillCategory === opt.value ? 'border-teal-500 bg-teal-500/10 text-teal-400' : 'border-zinc-850 text-zinc-400 hover:text-zinc-200'}`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </form>
+
+              {/* List of skills categorized */}
+              <div className="space-y-4 pt-2">
+                <h4 className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider">Current Skills Matrix ({skills.length} skills)</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {skills.map((s) => (
+                    <div key={s.id} className="p-3 bg-zinc-950/40 border border-zinc-850 rounded-xl flex items-center justify-between gap-3 text-xs">
+                      <div>
+                        <p className="font-bold text-white">{s.name}</p>
+                        <p className="text-[10px] text-teal-400 mt-1 font-mono uppercase">{s.level} • {s.category}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteSkill(s.id)}
+                        className="p-1.5 rounded-md hover:bg-rose-950 hover:text-rose-400 text-zinc-500 transition-colors cursor-pointer"
+                        title="Delete skill"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 4: SERVICES SOLUTIONS */}
+          {activeTab === 'services' && (
+            <div className="space-y-6 animate-fade-in" id="edit_tab_services">
+              
+              <div className="p-3 bg-teal-950/25 border border-teal-800/30 text-teal-400 rounded-xl text-[11px] leading-relaxed">
+                {lang === 'en' 
+                  ? 'Update the 4 core professional columns featured in your services portfolio. Manage individual bullet points in both languages.' 
+                  : 'تعديل قطاعات الخدمات الأربعة المكتوبة في الصفحة. يمكنك تعديل بنود النقاط باللغتين بسهولة.'}
+              </div>
+
+              {services.map((srv, srvIdx) => (
+                <div key={srv.id} className="p-5 bg-zinc-950/40 border border-zinc-850 rounded-xl space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-zinc-850 pb-3">
+                    <div className="space-y-1">
+                      <span className="text-[9px] font-mono text-zinc-500">SERVICE CATEGORY TITLE (EN)</span>
+                      <input
+                        type="text"
+                        value={srv.categoryTitle.en}
+                        onChange={(e) => {
+                          const next = [...services];
+                          next[srvIdx].categoryTitle.en = e.target.value;
+                          setServices(next);
+                        }}
+                        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-teal-500/50 font-bold"
+                      />
+                    </div>
+                    <div className="space-y-1 text-right">
+                      <span className="text-[9px] font-mono text-zinc-500">عنوان الخدمة (AR)</span>
+                      <input
+                        type="text"
+                        value={srv.categoryTitle.ar}
+                        onChange={(e) => {
+                          const next = [...services];
+                          next[srvIdx].categoryTitle.ar = e.target.value;
+                          setServices(next);
+                        }}
+                        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white text-right outline-none focus:border-teal-500/50 font-bold font-sans"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Bullet Points List */}
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center">
+                      <span className="text-[10px] text-zinc-400 font-mono uppercase tracking-wider">Service Bullet Items</span>
+                      <button
+                        type="button"
+                        onClick={() => handleAddServiceBullet(srvIdx)}
+                        className="flex items-center gap-1 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                      >
+                        <Plus size={12} />
+                        <span>Add Item</span>
+                      </button>
+                    </div>
+
+                    <div className="space-y-3">
+                      {srv.items.map((bullet, bulletIdx) => (
+                        <div key={bulletIdx} className="grid grid-cols-12 gap-3 items-center bg-zinc-900/40 p-2.5 rounded-lg border border-zinc-850">
+                          <div className="col-span-5">
+                            <input
+                              type="text"
+                              value={bullet.en}
+                              onChange={(e) => handleEditServiceBullet(srvIdx, bulletIdx, e.target.value, 'en')}
+                              className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-2 py-1 text-xs text-zinc-300 outline-none"
+                            />
+                          </div>
+                          <div className="col-span-6">
+                            <input
+                              type="text"
+                              value={bullet.ar}
+                              onChange={(e) => handleEditServiceBullet(srvIdx, bulletIdx, e.target.value, 'ar')}
+                              className="w-full bg-zinc-950 border border-zinc-800 rounded-md px-2 py-1 text-xs text-zinc-300 text-right font-sans outline-none"
+                            />
+                          </div>
+                          <div className="col-span-1 flex justify-center">
+                            <button
+                              type="button"
+                              onClick={() => handleDeleteServiceBullet(srvIdx, bulletIdx)}
+                              className="text-rose-400 hover:text-rose-300 p-1 rounded hover:bg-rose-950/40 cursor-pointer"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ))}
+
+              <div className="flex justify-end pt-4 border-t border-zinc-800/40">
+                <button
+                  type="button"
+                  onClick={handleSaveServices}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-black font-bold text-xs cursor-pointer shadow-md transition-all"
+                >
+                  <Save size={14} />
+                  <span>{lang === 'en' ? 'Save Services Solutions' : 'حفظ التعديلات'}</span>
+                </button>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 5: KEY HIGHLIGHTS / ACHIEVEMENTS */}
+          {activeTab === 'achievements' && (
+            <div className="space-y-6 animate-fade-in" id="edit_tab_achievements">
+              
+              <div className="p-3 bg-teal-950/25 border border-teal-800/30 text-teal-400 rounded-xl text-[11px] leading-relaxed">
+                {lang === 'en' 
+                  ? 'Edit the numerical achievements and key performance indices featured across the bottom of the hero block.' 
+                  : 'تعديل الأرقام القياسية والمؤشرات المئوية البارزة أسفل الشاشة الرئيسية للتعريف السريع بإنجازاتك.'}
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                {achievements.map((ach, idx) => (
+                  <div key={ach.id} className="p-4 bg-zinc-950/40 border border-zinc-850 rounded-xl grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                    <div className="sm:col-span-1 text-xs font-mono text-zinc-500">0{idx + 1}</div>
+                    
+                    <div className="sm:col-span-5 space-y-1">
+                      <span className="text-[9px] font-mono text-zinc-500">HIGHLIGHT DESCRIPTION (EN)</span>
+                      <input
+                        type="text"
+                        value={ach.title.en}
+                        onChange={(e) => {
+                          const next = [...achievements];
+                          next[idx].title.en = e.target.value;
+                          setAchievements(next);
+                        }}
+                        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1 text-xs text-white outline-none"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-5 space-y-1 text-right">
+                      <span className="text-[9px] font-mono text-zinc-500">الوصف بالعربية (AR)</span>
+                      <input
+                        type="text"
+                        value={ach.title.ar}
+                        onChange={(e) => {
+                          const next = [...achievements];
+                          next[idx].title.ar = e.target.value;
+                          setAchievements(next);
+                        }}
+                        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1 text-xs text-white text-right outline-none font-sans"
+                      />
+                    </div>
+
+                    <div className="sm:col-span-1 space-y-1">
+                      <span className="text-[9px] font-mono text-zinc-500">ICON</span>
+                      <input
+                        type="text"
+                        value={ach.iconName}
+                        onChange={(e) => {
+                          const next = [...achievements];
+                          next[idx].iconName = e.target.value;
+                          setAchievements(next);
+                        }}
+                        className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1 text-xs text-white text-center font-mono outline-none"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-zinc-800/40">
+                <button
+                  type="button"
+                  onClick={handleSaveAchievements}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-black font-bold text-xs cursor-pointer shadow-md transition-all"
+                >
+                  <Save size={14} />
+                  <span>{lang === 'en' ? 'Save Key Highlights' : 'حفظ التعديلات'}</span>
+                </button>
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 6: EDUCATION & CERTIFICATES */}
+          {activeTab === 'edu_certs' && (
+            <div className="space-y-6 animate-fade-in" id="edit_tab_edu_certs">
+              
+              {/* Education section */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-center pb-2 border-b border-zinc-800/60">
+                  <h4 className="text-xs uppercase tracking-widest text-zinc-400 font-mono font-bold flex items-center gap-1.5">
+                    <GraduationCap size={16} className="text-teal-400" />
+                    <span>{lang === 'en' ? 'Academic Education' : 'المؤهلات والتعليم الأكاديمي'}</span>
+                  </h4>
+                </div>
+
+                {education.map((edu, idx) => (
+                  <div key={edu.id} className="p-4 bg-zinc-950/40 border border-zinc-850 rounded-xl space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] font-mono text-zinc-500">DEGREE TITLE (EN)</span>
+                        <input
+                          type="text"
+                          value={edu.degree.en}
+                          onChange={(e) => {
+                            const next = [...education];
+                            next[idx].degree.en = e.target.value;
+                            setEducation(next);
+                          }}
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <span className="text-[9px] font-mono text-zinc-500">الدرجة والتخصص (AR)</span>
+                        <input
+                          type="text"
+                          value={edu.degree.ar}
+                          onChange={(e) => {
+                            const next = [...education];
+                            next[idx].degree.ar = e.target.value;
+                            setEducation(next);
+                          }}
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white text-right font-sans outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="space-y-1">
+                        <span className="text-[9px] font-mono text-zinc-500">INSTITUTION (EN)</span>
+                        <input
+                          type="text"
+                          value={edu.institution.en}
+                          onChange={(e) => {
+                            const next = [...education];
+                            next[idx].institution.en = e.target.value;
+                            setEducation(next);
+                          }}
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <span className="text-[9px] font-mono text-zinc-500">الجامعة والكلية (AR)</span>
+                        <input
+                          type="text"
+                          value={edu.institution.ar}
+                          onChange={(e) => {
+                            const next = [...education];
+                            next[idx].institution.ar = e.target.value;
+                            setEducation(next);
+                          }}
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white text-right font-sans outline-none"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <span className="text-[9px] font-mono text-zinc-500">GRADUATION YEAR</span>
+                        <input
+                          type="text"
+                          value={edu.year}
+                          onChange={(e) => {
+                            const next = [...education];
+                            next[idx].year = e.target.value;
+                            setEducation(next);
+                          }}
+                          className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white font-mono outline-none"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Certificates section */}
+              <div className="space-y-4 pt-4 border-t border-zinc-800/40">
+                <div className="flex justify-between items-center pb-2">
+                  <h4 className="text-xs uppercase tracking-widest text-zinc-400 font-mono font-bold flex items-center gap-1.5">
+                    <Award size={16} className="text-teal-400" />
+                    <span>{lang === 'en' ? 'Professional Credentials' : 'الشهادات والاعتمادات المهنية'}</span>
+                  </h4>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const next = [...certificates, {
+                        id: `cert_${Date.now()}`,
+                        name: { en: 'New Certificate', ar: 'شهادة جديدة' },
+                        issuer: { en: 'Issuer Body', ar: 'الجهة المانحة' }
+                      }];
+                      setCertificates(next);
+                    }}
+                    className="flex items-center gap-1 text-[11px] text-teal-400 hover:text-teal-300 font-bold cursor-pointer"
+                  >
+                    <Plus size={12} />
+                    <span>Add Certificate</span>
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {certificates.map((cert, idx) => (
+                    <div key={cert.id} className="p-4 bg-zinc-950/40 border border-zinc-850 rounded-xl space-y-3">
+                      <div className="flex justify-between items-start gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+                          <div className="space-y-1">
+                            <span className="text-[9px] font-mono text-zinc-500">CERTIFICATION NAME (EN)</span>
+                            <input
+                              type="text"
+                              value={cert.name.en}
+                              onChange={(e) => {
+                                const next = [...certificates];
+                                next[idx].name.en = e.target.value;
+                                setCertificates(next);
+                              }}
+                              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none"
+                            />
+                          </div>
+                          <div className="space-y-1 text-right">
+                            <span className="text-[9px] font-mono text-zinc-500">اسم الشهادة والاعتماد (AR)</span>
+                            <input
+                              type="text"
+                              value={cert.name.ar}
+                              onChange={(e) => {
+                                const next = [...certificates];
+                                next[idx].name.ar = e.target.value;
+                                setCertificates(next);
+                              }}
+                              className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white text-right font-sans outline-none"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const next = certificates.filter(c => c.id !== cert.id);
+                            setCertificates(next);
+                          }}
+                          className="text-rose-400 hover:text-rose-300 p-1.5 rounded hover:bg-rose-950/40 cursor-pointer mt-5"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="space-y-1">
+                          <span className="text-[9px] font-mono text-zinc-500">ISSUING AUTHORITY (EN)</span>
+                          <input
+                            type="text"
+                            value={cert.issuer.en}
+                            onChange={(e) => {
+                              const next = [...certificates];
+                              next[idx].issuer.en = e.target.value;
+                              setCertificates(next);
+                            }}
+                            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none"
+                          />
+                        </div>
+                        <div className="space-y-1 text-right">
+                          <span className="text-[9px] font-mono text-zinc-500">الجهة المانحة والناشرة (AR)</span>
+                          <input
+                            type="text"
+                            value={cert.issuer.ar}
+                            onChange={(e) => {
+                              const next = [...certificates];
+                              next[idx].issuer.ar = e.target.value;
+                              setCertificates(next);
+                            }}
+                            className="w-full bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white text-right font-sans outline-none"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-zinc-800/40">
+                <button
+                  type="button"
+                  onClick={handleSaveEduCerts}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-black font-bold text-xs cursor-pointer shadow-md transition-all"
+                >
+                  <Save size={14} />
+                  <span>{lang === 'en' ? 'Save Education & Certs' : 'حفظ التعديلات'}</span>
+                </button>
+              </div>
 
             </div>
           )}
