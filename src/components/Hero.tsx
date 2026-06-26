@@ -124,98 +124,56 @@ export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
 
           </div>
 
-          {/* RIGHT COLUMN: CODE BACKDROP WITH PROFILE PHOTO OVERLAY */}
+          {/* RIGHT COLUMN: PORTRAIT PHOTO CARD */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end" id="hero_visual">
-            <div className="w-full max-w-sm sm:max-w-md relative pb-10 pr-4">
-              
-              {/* Backing Code/IDE Window Frame */}
-              <div className="w-[85%] bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl opacity-60 sm:opacity-75 transition-opacity">
-                
-                {/* Editor Bar */}
-                <div className="flex justify-between items-center px-4 py-3 bg-slate-950 border-b border-slate-850">
-                  <div className="flex gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
+            <div className="w-full max-w-[280px] sm:max-w-[320px] aspect-[3/4] bg-white border border-zinc-200 rounded-3xl shadow-xl p-3 flex flex-col group hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 relative">
+              <div className="relative w-full h-full rounded-2xl overflow-hidden bg-zinc-50 border border-zinc-150 flex items-center justify-center">
+                {profile.avatar ? (
+                  <img
+                    src={profile.avatar}
+                    alt={profile.name[lang]}
+                    referrerPolicy="no-referrer"
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 bg-gradient-to-tr from-zinc-50 to-zinc-100 p-4 text-center">
+                    <div className="w-14 h-14 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 mb-3 shadow-inner">
+                      <User size={24} />
+                    </div>
+                    <span className="text-sm font-bold text-zinc-700 font-sans leading-none">{lang === 'en' ? 'Quality Engineer' : 'مهندس جودة أول'}</span>
+                    <span className="text-xs text-zinc-400 mt-2 font-mono">{lang === 'en' ? 'No Photo Set' : 'لم يتم تعيين صورة'}</span>
                   </div>
-                  <span className="text-[9px] font-mono text-slate-500">quality_analytics.py</span>
-                </div>
+                )}
 
-                {/* Technical Code Editor Snippet */}
-                <div className="p-4 sm:p-5 font-mono text-[9px] sm:text-[10px] leading-relaxed text-slate-300 space-y-1 h-[280px] sm:h-[320px] overflow-hidden select-none">
-                  <div><span className="text-amber-500">import</span> pandas <span className="text-amber-500">as</span> pd</div>
-                  <div><span className="text-amber-500">import</span> powerbi_client <span className="text-amber-500">as</span> pbi</div>
-                  <div className="text-slate-500"># ETL Pipeline and Quality Analytics Modeling</div>
-                  <div><span className="text-amber-400">def</span> <span className="text-cyan-400">process_industrial_data</span>(raw_erp_path):</div>
-                  <div className="pl-4">df = pd.read_csv(raw_erp_path)</div>
-                  <div className="pl-4">df_clean = df.dropna(subset=[<span className="text-emerald-400">'batch_id'</span>])</div>
-                  <div className="pl-4 text-slate-500"># Calculate defect rate and filter NCRs</div>
-                  <div className="pl-4">ncr_rate = (df_clean[<span className="text-emerald-400">'defects'</span>].sum() / df_clean[<span className="text-emerald-400">'runs'</span>].sum()) * <span className="text-violet-400">100</span></div>
-                  <div className="pl-4"><span className="text-amber-500">print</span>(f<span className="text-emerald-400">"Current NCR Rate: {'{'}ncr_rate:.2%{'}'}"</span>)</div>
-                  <div className="pl-4"><span className="text-amber-500">return</span> df_clean</div>
-                  <div className="pt-2 text-slate-500"># DAX Measure Definitions</div>
-                  <div>NCR_Rate = <span className="text-blue-400">DIVIDE</span>(</div>
-                  <div className="pl-4"><span className="text-blue-400">COUNTROWS</span>(NonConformities),</div>
-                  <div className="pl-4"><span className="text-blue-400">COUNTROWS</span>(TotalProduction),</div>
-                  <div className="pl-4"><span className="text-violet-400">0</span></div>
-                  <div>)</div>
-                  <div className="text-slate-500 pt-2"># Active Power Automate trigger</div>
-                  <div>on_ncr_logged.trigger(alert_executives)</div>
+                {/* Edit action overlay if Admin is toggled */}
+                {isAdmin && onOpenEditor && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onOpenEditor();
+                    }}
+                    className="absolute top-3 right-3 px-3 py-2 bg-white/95 border border-zinc-200 hover:bg-teal-50 text-teal-700 rounded-xl shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center gap-1.5 z-20"
+                    title={lang === 'en' ? 'Edit Photo' : 'تعديل الصورة'}
+                  >
+                    <Camera size={14} className="text-teal-600 animate-pulse" />
+                    <span className="text-xs font-bold tracking-tight">{lang === 'en' ? 'Change Photo' : 'تغيير الصورة'}</span>
+                  </button>
+                )}
+
+                {/* Sleek bottom card overlay */}
+                <div className="absolute bottom-3 left-3 right-3 bg-white/95 border border-zinc-150 p-3 rounded-2xl backdrop-blur-md flex items-center justify-between shadow-lg">
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-xs font-bold text-zinc-900 tracking-tight leading-none truncate">
+                      {lang === 'en' ? 'Abdelrahman Sherief' : 'عبدالرحمن شريف'}
+                    </h4>
+                    <p className="text-[9px] text-zinc-500 font-mono mt-1.5 truncate">
+                      Power BI • SQL • Automate
+                    </p>
+                  </div>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0 ml-2"></span>
                 </div>
 
               </div>
-
-              {/* OVERLAPPING PORTRAIT PHOTO CARD */}
-              <div className="absolute bottom-2 right-0 w-[60%] aspect-[3/4] bg-white border border-zinc-200 rounded-2xl shadow-2xl p-2.5 flex flex-col group hover:-translate-y-1 transition-all duration-300">
-                <div className="relative w-full h-full rounded-xl overflow-hidden bg-zinc-50 border border-zinc-150 flex items-center justify-center">
-                  {profile.avatar ? (
-                    <img
-                      src={profile.avatar}
-                      alt={profile.name[lang]}
-                      referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 bg-gradient-to-tr from-zinc-50 to-zinc-100 p-4 text-center">
-                      <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 mb-2 shadow-inner">
-                        <User size={20} />
-                      </div>
-                      <span className="text-xs font-bold text-zinc-700 font-sans leading-none">{lang === 'en' ? 'Quality Engineer' : 'مهندس جودة أول'}</span>
-                      <span className="text-[10px] text-zinc-400 mt-1.5 font-mono">{lang === 'en' ? 'No Photo Set' : 'لم يتم تعيين صورة'}</span>
-                    </div>
-                  )}
-
-                  {/* Edit action overlay if Admin is toggled */}
-                  {isAdmin && onOpenEditor && (
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onOpenEditor();
-                      }}
-                      className="absolute top-2.5 right-2.5 px-2.5 py-1.5 bg-white/95 border border-zinc-200 hover:bg-teal-50 text-teal-700 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center gap-1.5 z-20"
-                      title={lang === 'en' ? 'Edit Photo' : 'تعديل الصورة'}
-                    >
-                      <Camera size={12} className="text-teal-600 animate-pulse" />
-                      <span className="text-[10px] font-bold tracking-tight">{lang === 'en' ? 'Change Photo' : 'تغيير الصورة'}</span>
-                    </button>
-                  )}
-
-                  {/* Sleek bottom card overlay */}
-                  <div className="absolute bottom-2 left-2 right-2 bg-white/95 border border-zinc-150 p-2.5 rounded-xl backdrop-blur-md flex items-center justify-between shadow-lg">
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-[11px] font-bold text-zinc-900 tracking-tight leading-none truncate">
-                        {lang === 'en' ? 'Abdelrahman Sherief' : 'عبدالرحمن شريف'}
-                      </h4>
-                      <p className="text-[8px] text-zinc-500 font-mono mt-1 truncate">
-                        Power BI • SQL • Automate
-                      </p>
-                    </div>
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 ml-1.5"></span>
-                  </div>
-
-                </div>
-              </div>
-
             </div>
           </div>
 
