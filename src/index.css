@@ -9,8 +9,8 @@
 html, body {
   font-family: var(--font-sans);
   scroll-behavior: smooth;
-  background-color: #09090b; /* zinc-950 */
-  color: #f4f4f5; /* zinc-100 */
+  background-color: #f9fafb; /* slate-50 */
+  color: #0f172a; /* slate-900 */
 }
 
 /* Custom glow animations and scrollbars */
@@ -19,14 +19,14 @@ html, body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: #f1f5f9; /* slate-100 */
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272a;
+  background: #cbd5e1; /* slate-300 */
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3f3f46;
+  background: #94a3b8; /* slate-400 */
 }
 
 @keyframes pulse-glow {

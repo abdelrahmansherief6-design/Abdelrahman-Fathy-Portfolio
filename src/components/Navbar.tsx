@@ -43,17 +43,17 @@ export default function Navbar({
   ];
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md">
+    <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         
         {/* Logo / Name */}
         <a href="#hero" className="flex items-center gap-3 group">
-          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-teal-500 to-cyan-400 font-extrabold text-black font-sans text-xs tracking-wider shadow-lg shadow-teal-500/10 group-hover:shadow-teal-500/30 transition-all">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-teal-600 to-cyan-500 font-extrabold text-white font-sans text-xs tracking-wider shadow-lg shadow-teal-600/10 group-hover:shadow-teal-600/30 transition-all">
             AS
           </div>
           <div className="flex flex-col">
-            <span className="font-sans text-xs font-bold tracking-tight text-white hover:text-teal-400 transition-colors leading-none">
-              {lang === 'en' ? 'Abdelrahman Sherief' : 'عبد الرحمن شريف'}
+            <span className="font-sans text-xs font-bold tracking-tight text-zinc-900 hover:text-teal-600 transition-colors leading-none">
+              Abdelrahman Sherief
             </span>
             <span className="text-[9px] font-mono text-zinc-500 mt-0.5 leading-none">Senior Quality Engineer</span>
           </div>
@@ -65,7 +65,7 @@ export default function Navbar({
             <a
               key={i}
               href={link.href}
-              className="text-xs font-medium text-zinc-400 hover:text-white transition-colors"
+              className="text-xs font-medium text-zinc-600 hover:text-zinc-900 transition-colors"
             >
               {link.label[lang]}
             </a>
@@ -77,7 +77,7 @@ export default function Navbar({
           {/* Resume Pill Button */}
           <a
             href="#about"
-            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-semibold text-zinc-300 hover:text-white hover:border-zinc-700 transition-all"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white border border-zinc-200 text-[11px] font-semibold text-zinc-700 hover:text-zinc-900 hover:border-zinc-350 transition-all"
           >
             <span>{lang === 'en' ? 'Resume ↗' : 'السيرة الذاتية ↗'}</span>
           </a>
@@ -86,18 +86,18 @@ export default function Navbar({
           <button
             onClick={onExportData}
             title={lang === 'en' ? 'Backup & Export Portfolio (JSON)' : 'نسخ احتياطي وتصدير البيانات (JSON)'}
-            className="flex items-center gap-1 text-[11px] font-mono px-2 py-1.5 rounded-lg border border-zinc-800 bg-zinc-900/40 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700 transition-all"
+            className="flex items-center gap-1 text-[11px] font-mono px-2 py-1.5 rounded-lg border border-zinc-200 bg-white text-zinc-600 hover:text-zinc-800 hover:border-zinc-300 transition-all cursor-pointer"
           >
-            <FileDown size={14} className="text-teal-500" />
+            <FileDown size={14} className="text-teal-600" />
             <span className="hidden lg:inline">{lang === 'en' ? 'Backup JSON' : 'تصدير JSON'}</span>
           </button>
 
           {/* Language Toggle */}
           <button
             onClick={toggleLang}
-            className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-zinc-800 hover:border-teal-500/50 hover:bg-zinc-900/60 text-zinc-300 transition-all cursor-pointer font-sans"
+            className="flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-zinc-200 hover:border-teal-500/50 hover:bg-zinc-50 text-zinc-700 transition-all cursor-pointer font-sans"
           >
-            <Globe size={14} className="text-teal-400" />
+            <Globe size={14} className="text-teal-600" />
             <span>{lang === 'en' ? 'العربية' : 'English'}</span>
           </button>
 
@@ -107,8 +107,8 @@ export default function Navbar({
             title={isAdmin ? (lang === 'en' ? 'Lock Editor' : 'قفل التعديل') : (lang === 'en' ? 'Unlock Editor' : 'فتح وضع التعديل')}
             className={`flex items-center justify-center p-2 rounded-lg border transition-all cursor-pointer ${
               isAdmin 
-                ? 'bg-teal-500/10 border-teal-500 text-teal-400' 
-                : 'bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
+                ? 'bg-teal-500/10 border-teal-500 text-teal-600' 
+                : 'bg-white border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300'
             }`}
           >
             {isAdmin ? <Unlock size={14} /> : <Lock size={14} />}
@@ -118,7 +118,7 @@ export default function Navbar({
           {isAdmin && (
             <button
               onClick={onOpenEditor}
-              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-teal-500 hover:bg-teal-400 text-black font-semibold transition-all shadow-md shadow-teal-500/10 cursor-pointer animate-pulse"
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 text-white font-semibold transition-all shadow-md shadow-teal-600/10 cursor-pointer animate-pulse"
             >
               <Settings size={14} />
               <span>{lang === 'en' ? 'Manage' : 'تعديل المحتوى'}</span>
@@ -128,7 +128,7 @@ export default function Navbar({
           {/* Email Shortcut */}
           <a
             href="mailto:abdelrahmansherief6@gmail.com"
-            className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700 transition-all"
+            className="p-2 rounded-lg bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300 transition-all"
             title={lang === 'en' ? 'Contact Email' : 'البريد الإلكتروني'}
           >
             <Mail size={14} />

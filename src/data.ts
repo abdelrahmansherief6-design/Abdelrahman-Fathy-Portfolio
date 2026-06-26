@@ -4,7 +4,7 @@ export const defaultPortfolioData: PortfolioData = {
   profile: {
     name: {
       en: "Abdelrahman Fathy Sherief",
-      ar: "عبد الرحمن فتحي شريف"
+      ar: "Abdelrahman Fathy Sherief"
     },
     headline: {
       en: "Senior Product Quality Engineer | Data Analytics & Process Automation Specialist",
@@ -16,7 +16,7 @@ export const defaultPortfolioData: PortfolioData = {
     },
     aboutMe: {
       en: "Abdelrahman Fathy Sherief is a Senior Product Quality Engineer and Data Analytics Specialist with more than 6 years of experience in manufacturing, quality management, business intelligence, and process automation. Throughout his career, he has successfully designed and implemented end-to-end data-driven systems that support quality control, operational monitoring, performance management, and executive decision-making. His expertise combines industrial experience with advanced analytics capabilities, enabling organizations to transform raw data into meaningful insights, automated workflows, and performance-driven solutions. He specializes in Power BI, Excel, Power Query, Power Pivot, DAX, Power Automate, AppSheet, ETL Processes, Dashboard Development, and Quality Analytics. His work focuses on improving operational efficiency, reducing costs, increasing visibility, and enabling data-driven decision-making across organizations.",
-      ar: "عبد الرحمن فتحي شريف هو مهندس أول جودة منتجات وأخصائي تحليل البيانات مع خبرة تزيد عن 6 سنوات في التصنيع، وإدارة الجودة، وذكاء الأعمال، وأتمتة العمليات. نجح خلال مسيرته المهنية في تصميم وتنفيذ أنظمة متكاملة تعتمد على البيانات لدعم مراقبة الجودة، والمتابعة التشغيلية، وإدارة الأداء، واتخاذ القرارات التنفيذية. يجمع بين الخبرة الصناعية العميقة والقدرات المتقدمة في تحليل البيانات، مما يمكن المؤسسات من تحويل البيانات الخام إلى رؤى مفيدة، وسير عمل مؤتمت، وحلول قائمة على الأداء. يتخصص في Power BI، وExcel، وPower Query، وPower Pivot، وDAX، وPower Automate، وAppSheet، وعمليات ETL، وتطوير لوحات القيادة (Dashboards)، وتحليلات الجودة. يركز عمله على تحسين الكفاءة التشغيلية، وخفض التكاليف، وزيادة الشفافية، وتمكين اتخاذ القرارات القائمة على البيانات في المؤسسات."
+      ar: "Abdelrahman Fathy Sherief هو مهندس أول جودة منتجات وأخصائي تحليل البيانات مع خبرة تزيد عن 6 سنوات في التصنيع، وإدارة الجودة، وذكاء الأعمال، وأتمتة العمليات. نجح خلال مسيرته المهنية في تصميم وتنفيذ أنظمة متكاملة تعتمد على البيانات لدعم مراقبة الجودة، والمتابعة التشغيلية، وإدارة الأداء، واتخاذ القرارات التنفيذية. يجمع بين الخبرة الصناعية العميقة والقدرات المتقدمة في تحليل البيانات، مما يمكن المؤسسات من تحويل البيانات الخام إلى رؤى مفيدة، وسير عمل مؤتمت، وحلول قائمة على الأداء. يتخصص في Power BI، وExcel، وPower Query، وPower Pivot، وDAX، وPower Automate، وAppSheet، وعمليات ETL، وتطوير لوحات القيادة (Dashboards)، وتحليلات الجودة. يركز عمله على تحسين الكفاءة التشغيلية، وخفض التكاليف، وزيادة الشفافية، وتمكين اتخاذ القرارات القائمة على البيانات في المؤسسات."
     },
     avatar: "", // Will be represented by a clean styled initials avatar or a placeholder
     email: "abdelrahmansherief6@gmail.com",

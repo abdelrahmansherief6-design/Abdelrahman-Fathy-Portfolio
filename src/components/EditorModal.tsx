@@ -311,17 +311,17 @@ export default function EditorModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/85 backdrop-blur-md animate-fade-in" id="editor_modal_wrapper">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-md animate-fade-in" id="editor_modal_wrapper">
+      <div className="bg-white border border-zinc-200 rounded-2xl w-full max-w-4xl max-h-[92vh] overflow-hidden flex flex-col shadow-2xl relative">
         
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-200 shrink-0">
           <div className="flex items-center gap-2">
-            <Layout className="text-teal-400" size={18} />
-            <h3 className="text-md sm:text-lg font-bold text-white font-sans">
+            <Layout className="text-teal-600" size={18} />
+            <h3 className="text-md sm:text-lg font-bold text-zinc-950 font-sans">
               {lang === 'en' ? 'Portfolio Management Dashboard' : 'لوحة تحكم وإدارة البورتفوليو'}
             </h3>
-            <span className="text-[10px] bg-teal-950 border border-teal-800/40 text-teal-400 font-mono px-2 py-0.5 rounded-full ml-2">ADMIN ACTIVE</span>
+            <span className="text-[10px] bg-teal-50 border border-teal-200 text-teal-700 font-mono px-2.5 py-0.5 rounded-full ml-2 font-semibold">ADMIN ACTIVE</span>
           </div>
           <button
             onClick={() => {
@@ -329,17 +329,17 @@ export default function EditorModal({
               setIsAddingProject(false);
               onClose();
             }}
-            className="p-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-white transition-all cursor-pointer"
+            className="p-1.5 rounded-lg bg-zinc-50 border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 transition-all cursor-pointer shadow-sm"
           >
             <X size={16} />
           </button>
         </div>
 
         {/* Navigation Tabs - Fully Expanded Scrollable Row */}
-        <div className="flex overflow-x-auto border-b border-zinc-800/60 bg-zinc-950/40 p-2 text-xs shrink-0 scrollbar-thin">
+        <div className="flex overflow-x-auto border-b border-zinc-200 bg-zinc-50 p-2 text-xs shrink-0 scrollbar-thin">
           <button
             onClick={() => { setActiveTab('bio'); setEditingProject(null); setIsAddingProject(false); }}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'bio' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'bio' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
           >
             <FileText size={14} />
             <span>{lang === 'en' ? 'Bio & Contact' : 'النبذة والاتصال'}</span>
@@ -347,7 +347,7 @@ export default function EditorModal({
 
           <button
             onClick={() => { setActiveTab('projects'); }}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'projects' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'projects' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
           >
             <ListPlus size={14} />
             <span>{lang === 'en' ? 'Projects' : 'المشاريع وقصص النجاح'}</span>
@@ -355,7 +355,7 @@ export default function EditorModal({
 
           <button
             onClick={() => { setActiveTab('skills'); setEditingProject(null); setIsAddingProject(false); }}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'skills' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'skills' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
           >
             <Database size={14} />
             <span>{lang === 'en' ? 'Skills Matrix' : 'المهارات الفنية'}</span>
@@ -363,7 +363,7 @@ export default function EditorModal({
 
           <button
             onClick={() => { setActiveTab('services'); setEditingProject(null); setIsAddingProject(false); }}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'services' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'services' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
           >
             <Sparkles size={14} />
             <span>{lang === 'en' ? 'Services' : 'الخدمات والحلول'}</span>
@@ -371,7 +371,7 @@ export default function EditorModal({
 
           <button
             onClick={() => { setActiveTab('achievements'); setEditingProject(null); setIsAddingProject(false); }}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'achievements' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'achievements' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
           >
             <Briefcase size={14} />
             <span>{lang === 'en' ? 'Highlights' : 'الأرقام والإنجازات'}</span>
@@ -379,7 +379,7 @@ export default function EditorModal({
 
           <button
             onClick={() => { setActiveTab('edu_certs'); setEditingProject(null); setIsAddingProject(false); }}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 ${activeTab === 'edu_certs' ? 'bg-zinc-800 text-teal-400' : 'text-zinc-400 hover:text-zinc-200'}`}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'edu_certs' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
           >
             <Award size={14} />
             <span>{lang === 'en' ? 'Education & Certs' : 'الشهادات والمؤهلات'}</span>

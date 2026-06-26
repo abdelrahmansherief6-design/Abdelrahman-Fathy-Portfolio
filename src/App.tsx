@@ -77,7 +77,7 @@ export default function App() {
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
 
   return (
-    <div dir={dir} className="min-h-screen bg-zinc-950 font-sans text-zinc-100 selection:bg-teal-500/30 selection:text-teal-200">
+    <div dir={dir} className="min-h-screen bg-[#f8fafc] font-sans text-slate-800 selection:bg-teal-500/10 selection:text-teal-900">
       
       {/* Navigation Topbar */}
       <Navbar
@@ -125,12 +125,12 @@ export default function App() {
 
         {/* Quick developer note (visible only to editors or admins as a helpful tip) */}
         {isAdmin && (
-          <div className="my-12 p-4 bg-zinc-900/60 border border-zinc-800 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs">
+          <div className="my-12 p-4 bg-white border border-zinc-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-xs">
             <div className="flex items-center gap-2.5">
-              <Info className="text-teal-400 shrink-0" size={16} />
+              <Info className="text-teal-600 shrink-0" size={16} />
               <div>
-                <p className="font-bold text-white">{lang === 'en' ? 'Quick Tip: Save Changes Permanently' : 'نصيحة: حفظ التغييرات بشكل دائم'}</p>
-                <p className="text-zinc-400">
+                <p className="font-bold text-zinc-900">{lang === 'en' ? 'Quick Tip: Save Changes Permanently' : 'نصيحة: حفظ التغييرات بشكل دائم'}</p>
+                <p className="text-zinc-600">
                   {lang === 'en'
                     ? 'Changes are saved locally. Click "Backup JSON" to export. To deploy permanently, replace /src/data.ts contents with the exported JSON file.'
                     : 'التعديلات تحفظ في متصفحك. انقر "تصدير JSON" لحفظ نسخة، أو استبدل محتويات الملف /src/data.ts لنشرها بشكل دائم.'}
@@ -138,8 +138,8 @@ export default function App() {
               </div>
             </div>
             {/* Import Button */}
-            <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-zinc-300 font-semibold cursor-pointer select-none transition-all text-xs shrink-0">
-              <FileUp size={14} className="text-teal-500" />
+            <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-700 font-semibold cursor-pointer select-none transition-all text-xs shrink-0">
+              <FileUp size={14} className="text-teal-600" />
               <span>{lang === 'en' ? 'Restore JSON' : 'استيراد نسخة JSON'}</span>
               <input type="file" accept=".json" onChange={handleImportData} className="hidden" />
             </label>
@@ -149,26 +149,26 @@ export default function App() {
       </main>
 
       {/* Footer Branding & Contact info */}
-      <footer className="border-t border-zinc-900 bg-zinc-950 py-12 mt-20 text-xs text-zinc-500">
+      <footer className="border-t border-zinc-200 bg-white py-12 mt-20 text-xs text-zinc-500">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           
           <div className="flex items-center gap-2.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded bg-zinc-900 border border-zinc-800 font-bold text-zinc-300 text-xs">
-              AF
+            <div className="flex h-6 w-6 items-center justify-center rounded bg-zinc-100 border border-zinc-200 font-bold text-zinc-700 text-xs">
+              AS
             </div>
-            <p className="font-sans">
+            <p className="font-sans text-zinc-600">
               &copy; {new Date().getFullYear()} {portfolioData.profile.name[lang]}. {lang === 'en' ? 'All rights reserved.' : 'جميع الحقوق محفوظة.'}
             </p>
           </div>
 
           {/* Social and Contact Footer */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-zinc-400 font-sans">
-            <a href="mailto:abdelrahmansherief6@gmail.com" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Mail size={14} className="text-teal-500" />
+          <div className="flex flex-wrap items-center justify-center gap-6 text-zinc-600 font-sans">
+            <a href="mailto:abdelrahmansherief6@gmail.com" className="flex items-center gap-1.5 hover:text-zinc-900 transition-colors">
+              <Mail size={14} className="text-teal-600" />
               <span>{portfolioData.profile.email}</span>
             </a>
-            <a href={portfolioData.profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Linkedin size={14} className="text-teal-500" />
+            <a href={portfolioData.profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-zinc-900 transition-colors">
+              <Linkedin size={14} className="text-teal-600" />
               <span>LinkedIn</span>
               <ExternalLink size={10} />
             </a>

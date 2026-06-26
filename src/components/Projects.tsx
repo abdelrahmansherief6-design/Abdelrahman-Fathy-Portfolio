@@ -160,32 +160,32 @@ export default function Projects({
     : data.projects.filter(p => p.category.en === activeCategory);
 
   return (
-    <section id="projects" className="py-20 border-t border-zinc-900">
+    <section id="projects" className="py-20 border-t border-zinc-200">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <span className="w-8 h-[1px] bg-teal-500"></span>
-              <span className="text-xs uppercase tracking-widest text-teal-400 font-mono font-semibold">
+              <span className="w-8 h-[1px] bg-teal-600"></span>
+              <span className="text-xs uppercase tracking-widest text-teal-600 font-mono font-semibold">
                 {lang === 'en' ? 'Interactive Portfolio' : 'معرض المشروعات والحلول المنجزة'}
               </span>
             </div>
-            <h3 className="text-3xl font-bold tracking-tight text-white font-sans">
+            <h3 className="text-3xl font-bold tracking-tight text-zinc-900 font-sans">
               {lang === 'en' ? 'Engineering Case Studies' : 'مشاريع هندسية وقصص نجاح حقيقية'}
             </h3>
           </div>
 
           <div className="flex flex-wrap items-center gap-2.5">
             {/* Category filter tabs */}
-            <div className="flex flex-wrap gap-1 bg-zinc-900 p-1 rounded-xl border border-zinc-800 text-xs">
+            <div className="flex flex-wrap gap-1 bg-zinc-100 p-1 rounded-xl border border-zinc-200 text-xs">
               <button
                 onClick={() => setActiveCategory('all')}
-                className={`px-3 py-1.5 rounded-lg transition-all ${
+                className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                   activeCategory === 'all'
-                    ? 'bg-teal-500 text-black font-semibold'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'bg-teal-600 text-white font-semibold shadow-sm'
+                    : 'text-zinc-500 hover:text-zinc-800'
                 }`}
               >
                 {lang === 'en' ? 'All Work' : 'الكل'}
@@ -194,10 +194,10 @@ export default function Projects({
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg transition-all ${
+                  className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
                     activeCategory === cat
-                      ? 'bg-teal-500 text-black font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
+                      ? 'bg-teal-600 text-white font-semibold shadow-sm'
+                      : 'text-zinc-500 hover:text-zinc-800'
                   }`}
                 >
                   {cat}
@@ -209,7 +209,7 @@ export default function Projects({
             {isAdmin && (
               <button
                 onClick={onOpenAddProject}
-                className="flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-xl bg-teal-500 hover:bg-teal-400 text-black font-semibold transition-all cursor-pointer shadow-md"
+                className="flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold transition-all cursor-pointer shadow-md"
               >
                 <PlusCircle size={14} />
                 <span>{lang === 'en' ? 'Add Project' : 'إضافة مشروع'}</span>
@@ -224,10 +224,10 @@ export default function Projects({
             <div
               key={project.id}
               onClick={() => setSelectedProject(project)}
-              className="group bg-zinc-900/15 border border-zinc-800/80 rounded-2xl overflow-hidden hover:border-teal-500/30 transition-all duration-300 flex flex-col justify-between cursor-pointer relative"
+              className="group bg-white border border-zinc-200 rounded-2xl overflow-hidden hover:border-teal-500/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between cursor-pointer relative shadow-sm"
             >
               {/* Image/SVG Container */}
-              <div className="relative aspect-[16/10] overflow-hidden bg-zinc-950 border-b border-zinc-850">
+              <div className="relative aspect-[16/10] overflow-hidden bg-zinc-50 border-b border-zinc-150">
                 {project.image.startsWith('data:') || project.image.startsWith('http') ? (
                   <img
                     src={project.image}
@@ -240,7 +240,7 @@ export default function Projects({
                 )}
 
                 {/* Categories Badge on top */}
-                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-zinc-950/80 border border-zinc-800 text-[10px] uppercase font-mono tracking-wider text-teal-400 backdrop-blur-sm">
+                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-white/95 border border-zinc-200 text-[10px] uppercase font-mono tracking-wider text-teal-700 font-semibold backdrop-blur-sm shadow-sm">
                   {getTranslation(project.category)}
                 </div>
 
@@ -249,14 +249,14 @@ export default function Projects({
                   <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10" onClick={(e) => e.stopPropagation()}>
                     <button
                       onClick={() => onOpenEditProject(project)}
-                      className="p-1.5 bg-zinc-900/90 hover:bg-teal-500 hover:text-black border border-zinc-800 text-zinc-300 rounded-lg transition-all"
+                      className="p-1.5 bg-white/95 hover:bg-teal-50 hover:text-white border border-zinc-200 text-zinc-700 rounded-lg transition-all shadow-sm"
                       title={lang === 'en' ? 'Edit project' : 'تعديل المشروع'}
                     >
                       <Edit2 size={12} />
                     </button>
                     <button
                       onClick={(e) => deleteProject(project.id, e)}
-                      className="p-1.5 bg-zinc-900/90 hover:bg-rose-600 hover:text-white border border-zinc-850 text-zinc-300 rounded-lg transition-all"
+                      className="p-1.5 bg-white/95 hover:bg-rose-600 hover:text-white border border-zinc-200 text-zinc-700 rounded-lg transition-all shadow-sm"
                       title={lang === 'en' ? 'Delete project' : 'حذف المشروع'}
                     >
                       <Trash2 size={12} />
@@ -265,8 +265,8 @@ export default function Projects({
                 )}
 
                 {/* View Overlay on Hover */}
-                <div className="absolute inset-0 bg-zinc-950/40 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
-                  <div className="h-10 w-10 rounded-full bg-teal-500 text-black flex items-center justify-center transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-xl shadow-teal-500/20">
+                <div className="absolute inset-0 bg-zinc-950/20 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                  <div className="h-10 w-10 rounded-full bg-teal-600 text-white flex items-center justify-center transform translate-y-2 group-hover:translate-y-0 transition-all duration-300 shadow-xl shadow-teal-500/20">
                     <Eye size={18} strokeWidth={2.5} />
                   </div>
                 </div>
@@ -275,20 +275,20 @@ export default function Projects({
               {/* Text Area */}
               <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <h4 className="text-sm font-bold text-white tracking-tight group-hover:text-teal-400 transition-colors font-sans leading-snug">
+                  <h4 className="text-sm font-bold text-zinc-900 tracking-tight group-hover:text-teal-600 transition-colors font-sans leading-snug">
                     {getTranslation(project.title)}
                   </h4>
                   {/* Truncated snippet of problem */}
-                  <p className="text-xs text-zinc-400 mt-2 line-clamp-2 leading-relaxed font-sans font-light">
+                  <p className="text-xs text-zinc-500 mt-2 line-clamp-2 leading-relaxed font-sans font-light">
                     {getTranslation(project.problem)}
                   </p>
                 </div>
 
                 {/* Metrics preview row */}
-                <div className="grid grid-cols-3 gap-2 pt-4 mt-4 border-t border-zinc-800/60 text-center">
+                <div className="grid grid-cols-3 gap-2 pt-4 mt-4 border-t border-zinc-150 text-center">
                   {project.metrics.slice(0, 3).map((metric, index) => (
                     <div key={index} className="space-y-0.5">
-                      <p className="text-base font-bold font-mono text-teal-400 tracking-tight leading-none">
+                      <p className="text-base font-bold font-mono text-teal-600 tracking-tight leading-none">
                         {metric.value}
                       </p>
                       <p className="text-[9px] text-zinc-500 font-sans tracking-wide leading-tight">
@@ -302,7 +302,7 @@ export default function Projects({
           ))}
 
           {filteredProjects.length === 0 && (
-            <div className="col-span-full text-center py-16 text-zinc-500 italic text-xs">
+            <div className="col-span-full text-center py-16 text-zinc-400 italic text-xs">
               {lang === 'en' ? 'No projects matches this category selection.' : 'لا توجد أي مشروعات تطابق الفئة المختارة.'}
             </div>
           )}
@@ -310,19 +310,19 @@ export default function Projects({
 
         {/* Project Detailed Detail Dialog Modal */}
         {selectedProject && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-md animate-fade-in" id="project_detail_modal">
-            <div className="bg-zinc-900 border border-zinc-800/80 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative scrollbar-thin">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/40 backdrop-blur-md animate-fade-in" id="project_detail_modal">
+            <div className="bg-white border border-zinc-200 rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl relative scrollbar-thin">
               
               {/* Close Button */}
               <button
                 onClick={() => setSelectedProject(null)}
-                className="absolute top-4 right-4 z-10 p-1.5 rounded-lg bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-white transition-all cursor-pointer"
+                className="absolute top-4 right-4 z-10 p-1.5 rounded-lg bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-900 transition-all cursor-pointer shadow-sm"
               >
                 <X size={16} />
               </button>
 
               {/* Cover visual or video */}
-              <div className="relative aspect-[21/9] bg-zinc-950 border-b border-zinc-850 flex items-center justify-center overflow-hidden">
+              <div className="relative aspect-[21/9] bg-zinc-100 border-b border-zinc-150 flex items-center justify-center overflow-hidden">
                 {selectedProject.videoUrl ? (
                   <iframe
                     src={selectedProject.videoUrl}
@@ -339,19 +339,19 @@ export default function Projects({
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <div className="w-full h-full scale-110 opacity-40">
+                  <div className="w-full h-full scale-110 opacity-30">
                     {renderProjectThumbnail(selectedProject.image)}
                   </div>
                 )}
                 
                 {/* Title overlay if no video */}
                 {!selectedProject.videoUrl && (
-                  <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 to-transparent flex items-end p-6">
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent flex items-end p-6">
                     <div>
-                      <span className="text-[10px] uppercase tracking-wider font-mono text-teal-400 bg-teal-950/60 border border-teal-800/30 px-2 py-0.5 rounded-md">
+                      <span className="text-[10px] uppercase tracking-wider font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-semibold">
                         {getTranslation(selectedProject.category)}
                       </span>
-                      <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight mt-2 font-sans">
+                      <h3 className="text-xl md:text-2xl font-bold text-zinc-900 tracking-tight mt-2 font-sans">
                         {getTranslation(selectedProject.title)}
                       </h3>
                     </div>
@@ -364,24 +364,24 @@ export default function Projects({
                 
                 {/* If video URL exists, show title in body */}
                 {selectedProject.videoUrl && (
-                  <div className="border-b border-zinc-800/60 pb-4">
-                    <span className="text-[10px] uppercase tracking-wider font-mono text-teal-400 bg-teal-950/60 border border-teal-800/30 px-2 py-0.5 rounded-md">
+                  <div className="border-b border-zinc-150 pb-4">
+                    <span className="text-[10px] uppercase tracking-wider font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-semibold">
                       {getTranslation(selectedProject.category)}
                     </span>
-                    <h3 className="text-xl md:text-2xl font-bold text-white tracking-tight mt-2 font-sans">
+                    <h3 className="text-xl md:text-2xl font-bold text-zinc-900 tracking-tight mt-2 font-sans">
                       {getTranslation(selectedProject.title)}
                     </h3>
                   </div>
                 )}
 
                 {/* Performance Metrics panels */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-zinc-950 border border-zinc-850 p-4 rounded-xl">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-zinc-50 border border-zinc-200 p-4 rounded-xl">
                   {selectedProject.metrics.map((metric, i) => (
-                    <div key={i} className="text-center space-y-1 relative sm:after:content-[''] sm:after:absolute sm:after:right-0 sm:after:top-2 sm:after:h-8 sm:after:w-[1px] sm:after:bg-zinc-800 sm:last:after:hidden">
-                      <p className="text-2xl md:text-3xl font-extrabold font-mono text-teal-400 tracking-tight">
+                    <div key={i} className="text-center space-y-1 relative sm:after:content-[''] sm:after:absolute sm:after:right-0 sm:after:top-2 sm:after:h-8 sm:after:w-[1px] sm:after:bg-zinc-200 sm:last:after:hidden">
+                      <p className="text-2xl md:text-3xl font-extrabold font-mono text-teal-600 tracking-tight">
                         {metric.value}
                       </p>
-                      <p className="text-xs text-zinc-400 font-sans">
+                      <p className="text-xs text-zinc-500 font-sans">
                         {getTranslation(metric.label)}
                       </p>
                     </div>
@@ -393,33 +393,33 @@ export default function Projects({
                   
                   {/* Problem */}
                   <div className="space-y-2.5">
-                    <h4 className="text-xs uppercase tracking-widest text-zinc-400 font-mono font-bold flex items-center gap-1.5 border-b border-zinc-800 pb-1.5">
-                      <ShieldAlert size={14} className="text-rose-500" />
+                    <h4 className="text-xs uppercase tracking-widest text-zinc-500 font-mono font-bold flex items-center gap-1.5 border-b border-zinc-150 pb-1.5">
+                      <ShieldAlert size={14} className="text-rose-600" />
                       {lang === 'en' ? 'The Problem' : 'المشكلة والخلل'}
                     </h4>
-                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-sans font-light">
+                    <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-sans font-light">
                       {getTranslation(selectedProject.problem)}
                     </p>
                   </div>
 
                   {/* Solution */}
                   <div className="space-y-2.5">
-                    <h4 className="text-xs uppercase tracking-widest text-zinc-400 font-mono font-bold flex items-center gap-1.5 border-b border-zinc-800 pb-1.5">
-                      <Cpu size={14} className="text-teal-400" />
+                    <h4 className="text-xs uppercase tracking-widest text-zinc-500 font-mono font-bold flex items-center gap-1.5 border-b border-zinc-150 pb-1.5">
+                      <Cpu size={14} className="text-teal-600" />
                       {lang === 'en' ? 'The Solution' : 'الحل والهندسة الرقمية'}
                     </h4>
-                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-sans font-light">
+                    <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-sans font-light">
                       {getTranslation(selectedProject.solution)}
                     </p>
                   </div>
 
                   {/* Results */}
                   <div className="space-y-2.5">
-                    <h4 className="text-xs uppercase tracking-widest text-zinc-400 font-mono font-bold flex items-center gap-1.5 border-b border-zinc-800 pb-1.5">
-                      <TrendingUp size={14} className="text-emerald-400" />
+                    <h4 className="text-xs uppercase tracking-widest text-zinc-500 font-mono font-bold flex items-center gap-1.5 border-b border-zinc-150 pb-1.5">
+                      <TrendingUp size={14} className="text-emerald-600" />
                       {lang === 'en' ? 'The Impact' : 'الأثر بالأرقام والنتائج'}
                     </h4>
-                    <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-sans font-light">
+                    <p className="text-xs sm:text-sm text-zinc-600 leading-relaxed font-sans font-light">
                       {getTranslation(selectedProject.results)}
                     </p>
                   </div>
@@ -427,10 +427,10 @@ export default function Projects({
                 </div>
 
                 {/* Modal footer controls */}
-                <div className="flex justify-end pt-6 border-t border-zinc-800/60">
+                <div className="flex justify-end pt-6 border-t border-zinc-150">
                   <button
                     onClick={() => setSelectedProject(null)}
-                    className="px-5 py-2.5 rounded-xl bg-zinc-950 hover:bg-zinc-850 border border-zinc-800 text-xs font-semibold text-zinc-300 transition-all cursor-pointer"
+                    className="px-5 py-2.5 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-xs font-semibold text-zinc-700 transition-all cursor-pointer shadow-sm"
                   >
                     {lang === 'en' ? 'Back to Portfolio' : 'العودة للمعرض'}
                   </button>
