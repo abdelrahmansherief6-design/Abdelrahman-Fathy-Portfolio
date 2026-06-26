@@ -393,8 +393,8 @@ export default function EditorModal({
           {activeTab === 'bio' && (
             <div className="space-y-6 animate-fade-in" id="edit_tab_bio">
               
-              <div className="p-3 bg-teal-950/25 border border-teal-800/30 text-teal-400 rounded-xl text-[11px] leading-relaxed flex items-center gap-2">
-                <AlertCircle size={16} />
+              <div className="p-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-xl text-[11px] leading-relaxed flex items-center gap-2 font-sans font-medium">
+                <AlertCircle size={16} className="text-teal-600 shrink-0" />
                 <span>
                   {lang === 'en' 
                     ? 'Edit profile metadata, contact shortcuts, and portrait photo. These load instantly in the hero banner and page footer.' 
@@ -403,20 +403,20 @@ export default function EditorModal({
               </div>
 
               {/* Photo Upload Row */}
-              <div className="bg-zinc-950/40 border border-zinc-800/60 p-4 rounded-xl space-y-3">
-                <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider block">Profile Photo (Hero & About)</label>
-                <div className="flex items-center gap-4">
-                  <div className="h-16 w-16 rounded-xl border border-zinc-800 overflow-hidden bg-zinc-950 shrink-0">
+              <div className="bg-zinc-50 border border-zinc-200 p-4 rounded-xl space-y-3">
+                <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Profile Photo (Hero & About)</label>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                  <div className="h-16 w-16 rounded-xl border border-zinc-200 overflow-hidden bg-zinc-100 shrink-0 shadow-inner flex items-center justify-center">
                     {avatar ? (
                       <img src={avatar} alt="Profile Avatar" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-500 italic">No Photo</div>
+                      <div className="w-full h-full flex items-center justify-center text-[10px] text-zinc-400 italic font-medium">No Photo</div>
                     )}
                   </div>
-                  <div className="space-y-2">
-                    <div className="flex items-center gap-3">
-                      <label className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-zinc-850 bg-zinc-900 hover:bg-zinc-800 text-xs text-zinc-300 font-semibold cursor-pointer transition-all">
-                        <Upload size={12} className="text-teal-500" />
+                  <div className="space-y-2 flex-1 w-full">
+                    <div className="flex items-center gap-3 flex-wrap">
+                      <label className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-xs text-zinc-700 font-semibold cursor-pointer transition-all shadow-sm">
+                        <Upload size={12} className="text-teal-600" />
                         <span>{lang === 'en' ? 'Upload Photo' : 'رفع صورة'}</span>
                         <input type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
                       </label>
@@ -424,7 +424,7 @@ export default function EditorModal({
                         <button
                           type="button"
                           onClick={() => setAvatar('')}
-                          className="text-xs text-rose-400 hover:text-rose-300 font-medium"
+                          className="text-xs text-rose-600 hover:text-rose-700 font-semibold"
                         >
                           {lang === 'en' ? 'Reset to default' : 'إعادة الافتراضي'}
                         </button>
@@ -435,7 +435,7 @@ export default function EditorModal({
                       placeholder={lang === 'en' ? 'Or paste custom image URL' : 'أو الصق رابط صورة خارجي'}
                       value={avatar}
                       onChange={(e) => setAvatar(e.target.value)}
-                      className="w-full bg-zinc-950 border border-zinc-850 rounded-lg px-2.5 py-1.5 text-xs text-white focus:border-teal-500/50 outline-none max-w-md"
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/25 outline-none max-w-md shadow-sm"
                     />
                   </div>
                 </div>
@@ -444,21 +444,21 @@ export default function EditorModal({
               {/* Names */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Display Name (EN)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Display Name (EN)</label>
                   <input
                     type="text"
                     value={nameEn}
                     onChange={(e) => setNameEn(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-800 focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/25 outline-none shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5 text-right">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">الاسم بالكامل (AR)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">الاسم بالكامل (AR)</label>
                   <input
                     type="text"
                     value={nameAr}
                     onChange={(e) => setNameAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right font-sans"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-800 focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/25 outline-none text-right font-sans shadow-sm"
                   />
                 </div>
               </div>
@@ -466,52 +466,52 @@ export default function EditorModal({
               {/* Headline */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Headline / Professional Title (EN)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Headline / Professional Title (EN)</label>
                   <input
                     type="text"
                     value={headlineEn}
                     onChange={(e) => setHeadlineEn(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-800 focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/25 outline-none shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5 text-right">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">المسمى واللقب المهني (AR)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">المسمى واللقب المهني (AR)</label>
                   <input
                     type="text"
                     value={headlineAr}
                     onChange={(e) => setHeadlineAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white focus:border-teal-500/50 outline-none text-right font-sans"
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-800 focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/25 outline-none text-right font-sans shadow-sm"
                   />
                 </div>
               </div>
 
               {/* Contact Information */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-zinc-950/20 border border-zinc-800/40 p-4 rounded-xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-zinc-50 border border-zinc-200 p-4 rounded-xl shadow-sm">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Email Address</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Email Address</label>
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-teal-500/50"
+                    className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50 shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Phone number</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Phone number</label>
                   <input
                     type="text"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-teal-500/50"
+                    className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50 shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">LinkedIn Profile URL</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">LinkedIn Profile URL</label>
                   <input
                     type="url"
                     value={linkedin}
                     onChange={(e) => setLinkedin(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-teal-500/50"
+                    className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50 shadow-sm"
                   />
                 </div>
               </div>
@@ -519,21 +519,21 @@ export default function EditorModal({
               {/* Value Proposition */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">Value Proposition (EN)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Value Proposition (EN)</label>
                   <textarea
                     rows={3}
                     value={valPropEn}
                     onChange={(e) => setValPropEn(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none"
+                    className="w-full bg-white border border-zinc-200 rounded-xl p-3 text-xs text-zinc-800 focus:border-teal-500/50 outline-none resize-none shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5 text-right">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">رسالة القيمة المضافة المحققة (AR)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">رسالة القيمة المضافة المحققة (AR)</label>
                   <textarea
                     rows={3}
                     value={valPropAr}
                     onChange={(e) => setValPropAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none resize-none text-right font-sans"
+                    className="w-full bg-white border border-zinc-200 rounded-xl p-3 text-xs text-zinc-800 focus:border-teal-500/50 outline-none resize-none text-right font-sans shadow-sm"
                   />
                 </div>
               </div>
@@ -541,31 +541,31 @@ export default function EditorModal({
               {/* About Me */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">About Me / Profile Summary (EN)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">About Me / Profile Summary (EN)</label>
                   <textarea
                     rows={6}
                     value={aboutEn}
                     onChange={(e) => setAboutEn(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none scrollbar-thin"
+                    className="w-full bg-white border border-zinc-200 rounded-xl p-3 text-xs text-zinc-800 focus:border-teal-500/50 outline-none scrollbar-thin shadow-sm"
                   />
                 </div>
                 <div className="space-y-1.5 text-right">
-                  <label className="text-[11px] font-mono text-zinc-400 uppercase tracking-wider">الملخص المهني الكامل وسيرة العمل (AR)</label>
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">الملخص المهني الكامل وسيرة العمل (AR)</label>
                   <textarea
                     rows={6}
                     value={aboutAr}
                     onChange={(e) => setAboutAr(e.target.value)}
-                    className="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs text-white focus:border-teal-500/50 outline-none text-right scrollbar-thin font-sans"
+                    className="w-full bg-white border border-zinc-200 rounded-xl p-3 text-xs text-zinc-800 focus:border-teal-500/50 outline-none text-right scrollbar-thin font-sans shadow-sm"
                   />
                 </div>
               </div>
 
               {/* Actions Footer inside Tab */}
-              <div className="flex justify-end pt-4 border-t border-zinc-800/40">
+              <div className="flex justify-end pt-4 border-t border-zinc-200">
                 <button
                   type="button"
                   onClick={handleSaveBio}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-500 hover:bg-teal-400 text-black font-bold text-xs cursor-pointer shadow-md transition-all"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs cursor-pointer shadow-md transition-all"
                 >
                   <Save size={14} />
                   <span>{lang === 'en' ? 'Save Bio & Contact' : 'حفظ التعديلات'}</span>

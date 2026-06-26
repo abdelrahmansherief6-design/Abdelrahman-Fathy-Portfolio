@@ -93,7 +93,7 @@ export default function App() {
       <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative">
         
         {/* Hero Banner Showcase */}
-        <Hero data={portfolioData} lang={lang} />
+        <Hero data={portfolioData} lang={lang} isAdmin={isAdmin} onOpenEditor={() => setIsEditorOpen(true)} />
 
         {/* Live Interactive Analytics Dashboard (Highlighting his BI expertise!) */}
         <InteractiveDashboard lang={lang} />

@@ -1,13 +1,15 @@
 import React from 'react';
-import { ArrowUpRight, TrendingUp, Cpu, Database, Mail, Award, Linkedin, MapPin, Smartphone, Code } from 'lucide-react';
+import { ArrowUpRight, TrendingUp, Cpu, Database, Mail, Award, Linkedin, MapPin, Smartphone, Code, Camera, User } from 'lucide-react';
 import { PortfolioData } from '../types';
 
 interface HeroProps {
   data: PortfolioData;
   lang: 'en' | 'ar';
+  isAdmin?: boolean;
+  onOpenEditor?: () => void;
 }
 
-export default function Hero({ data, lang }: HeroProps) {
+export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
   const profile = data.profile;
 
   // Highlights row
@@ -122,25 +124,25 @@ export default function Hero({ data, lang }: HeroProps) {
 
           </div>
 
-          {/* RIGHT COLUMN: CODE BACKDROP (NO PHOTO) */}
+          {/* RIGHT COLUMN: CODE BACKDROP WITH PROFILE PHOTO OVERLAY */}
           <div className="lg:col-span-5 flex justify-center lg:justify-end" id="hero_visual">
-            <div className="w-full max-w-md relative">
+            <div className="w-full max-w-sm sm:max-w-md relative pb-10 pr-4">
               
               {/* Backing Code/IDE Window Frame */}
-              <div className="w-full bg-slate-900 border border-slate-800/80 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="w-[85%] bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl opacity-60 sm:opacity-75 transition-opacity">
                 
                 {/* Editor Bar */}
                 <div className="flex justify-between items-center px-4 py-3 bg-slate-950 border-b border-slate-850">
                   <div className="flex gap-2">
-                    <span className="w-3 h-3 rounded-full bg-rose-500/80"></span>
-                    <span className="w-3 h-3 rounded-full bg-amber-500/80"></span>
-                    <span className="w-3 h-3 rounded-full bg-emerald-500/80"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-rose-500/80"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500/80"></span>
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500/80"></span>
                   </div>
-                  <span className="text-[10px] font-mono text-slate-400">quality_analytics.py</span>
+                  <span className="text-[9px] font-mono text-slate-500">quality_analytics.py</span>
                 </div>
 
                 {/* Technical Code Editor Snippet */}
-                <div className="p-4 sm:p-6 font-mono text-[10px] leading-relaxed text-slate-300 space-y-1.5 h-[360px] overflow-hidden select-none">
+                <div className="p-4 sm:p-5 font-mono text-[9px] sm:text-[10px] leading-relaxed text-slate-300 space-y-1 h-[280px] sm:h-[320px] overflow-hidden select-none">
                   <div><span className="text-amber-500">import</span> pandas <span className="text-amber-500">as</span> pd</div>
                   <div><span className="text-amber-500">import</span> powerbi_client <span className="text-amber-500">as</span> pbi</div>
                   <div className="text-slate-500"># ETL Pipeline and Quality Analytics Modeling</div>
@@ -161,6 +163,57 @@ export default function Hero({ data, lang }: HeroProps) {
                   <div>on_ncr_logged.trigger(alert_executives)</div>
                 </div>
 
+              </div>
+
+              {/* OVERLAPPING PORTRAIT PHOTO CARD */}
+              <div className="absolute bottom-2 right-0 w-[60%] aspect-[3/4] bg-white border border-zinc-200 rounded-2xl shadow-2xl p-2.5 flex flex-col group hover:-translate-y-1 transition-all duration-300">
+                <div className="relative w-full h-full rounded-xl overflow-hidden bg-zinc-50 border border-zinc-150 flex items-center justify-center">
+                  {profile.avatar ? (
+                    <img
+                      src={profile.avatar}
+                      alt={profile.name[lang]}
+                      referrerPolicy="no-referrer"
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-400 bg-gradient-to-tr from-zinc-50 to-zinc-100 p-4 text-center">
+                      <div className="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 mb-2 shadow-inner">
+                        <User size={20} />
+                      </div>
+                      <span className="text-xs font-bold text-zinc-700 font-sans leading-none">{lang === 'en' ? 'Quality Engineer' : 'مهندس جودة أول'}</span>
+                      <span className="text-[10px] text-zinc-400 mt-1.5 font-mono">{lang === 'en' ? 'No Photo Set' : 'لم يتم تعيين صورة'}</span>
+                    </div>
+                  )}
+
+                  {/* Edit action overlay if Admin is toggled */}
+                  {isAdmin && onOpenEditor && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenEditor();
+                      }}
+                      className="absolute top-2.5 right-2.5 px-2.5 py-1.5 bg-white/95 border border-zinc-200 hover:bg-teal-50 text-teal-700 rounded-lg shadow-lg hover:shadow-xl transition-all cursor-pointer flex items-center gap-1.5 z-20"
+                      title={lang === 'en' ? 'Edit Photo' : 'تعديل الصورة'}
+                    >
+                      <Camera size={12} className="text-teal-600 animate-pulse" />
+                      <span className="text-[10px] font-bold tracking-tight">{lang === 'en' ? 'Change Photo' : 'تغيير الصورة'}</span>
+                    </button>
+                  )}
+
+                  {/* Sleek bottom card overlay */}
+                  <div className="absolute bottom-2 left-2 right-2 bg-white/95 border border-zinc-150 p-2.5 rounded-xl backdrop-blur-md flex items-center justify-between shadow-lg">
+                    <div className="min-w-0 flex-1">
+                      <h4 className="text-[11px] font-bold text-zinc-900 tracking-tight leading-none truncate">
+                        {lang === 'en' ? 'Abdelrahman Sherief' : 'عبدالرحمن شريف'}
+                      </h4>
+                      <p className="text-[8px] text-zinc-500 font-mono mt-1 truncate">
+                        Power BI • SQL • Automate
+                      </p>
+                    </div>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0 ml-1.5"></span>
+                  </div>
+
+                </div>
               </div>
 
             </div>
