@@ -16,8 +16,10 @@ export interface Project {
   solution: BilingualText;
   results: BilingualText;
   metrics: Metric[];
-  image: string; // URL or Base64 data URL
-  videoUrl?: string; // Optional YouTube/Vimeo embed URL or local video Base64
+  image: string; // URL or Base64 data URL (Primary / Thumbnail)
+  videoUrl?: string; // Optional YouTube/Vimeo embed URL (Primary / Default)
+  images?: string[]; // Array of additional images (URLs or Base64)
+  videoUrls?: string[]; // Array of additional YouTube/Vimeo embed URLs or video links
 }
 
 export interface Achievement {

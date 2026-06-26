@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Play, ShieldAlert, Cpu, BarChart2, CheckCircle2, TrendingUp, Info, Eye, ArrowLeft, Trash2, Edit2, PlusCircle, ArrowUpRight, Check, X } from 'lucide-react';
 import { PortfolioData, Project, Metric } from '../types';
 
@@ -21,6 +21,47 @@ export default function Projects({
 }: ProjectsProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [activeCategory, setActiveCategory] = useState<'all' | string>('all');
+  const [activeMediaIndex, setActiveMediaIndex] = useState(0);
+
+  // Reset active media when changing selected project
+  useEffect(() => {
+    setActiveMediaIndex(0);
+  }, [selectedProject]);
+
+  // Combine all media items for the selected project
+  const getProjectMedia = (project: Project) => {
+    const items: { type: 'image' | 'video'; src: string }[] = [];
+    
+    // Add primary video if it exists
+    if (project.videoUrl) {
+      items.push({ type: 'video', src: project.videoUrl });
+    }
+    
+    // Add primary image if it exists
+    if (project.image) {
+      items.push({ type: 'image', src: project.image });
+    }
+
+    // Add secondary images
+    if (project.images && project.images.length > 0) {
+      project.images.forEach(img => {
+        if (img && !items.some(x => x.src === img)) {
+          items.push({ type: 'image', src: img });
+        }
+      });
+    }
+
+    // Add secondary videos
+    if (project.videoUrls && project.videoUrls.length > 0) {
+      project.videoUrls.forEach(vid => {
+        if (vid && !items.some(x => x.src === vid)) {
+          items.push({ type: 'video', src: vid });
+        }
+      });
+    }
+
+    return items;
+  };
 
   // Extract unique categories for filter tabs
   const categories = ['all', ...Array.from(new Set(data.projects.map(p => p.category.en)))];
@@ -321,58 +362,114 @@ export default function Projects({
                 <X size={16} />
               </button>
 
-              {/* Cover visual or video */}
-              <div className="relative aspect-[21/9] bg-zinc-100 border-b border-zinc-150 flex items-center justify-center overflow-hidden">
-                {selectedProject.videoUrl ? (
-                  <iframe
-                    src={selectedProject.videoUrl}
-                    title={getTranslation(selectedProject.title)}
-                    className="w-full h-full border-0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                ) : selectedProject.image.startsWith('data:') || selectedProject.image.startsWith('http') ? (
-                  <img
-                    src={selectedProject.image}
-                    alt={getTranslation(selectedProject.title)}
-                    referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full scale-110 opacity-30">
-                    {renderProjectThumbnail(selectedProject.image)}
-                  </div>
-                )}
+              {/* Cover visual or video with Gallery Carousel */}
+              {(() => {
+                const mediaItems = getProjectMedia(selectedProject);
+                const activeMedia = mediaItems[activeMediaIndex] || mediaItems[0] || { type: 'image', src: selectedProject.image };
+                const hasMultipleMedia = mediaItems.length > 1;
                 
-                {/* Title overlay if no video */}
-                {!selectedProject.videoUrl && (
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent flex items-end p-6">
-                    <div>
-                      <span className="text-[10px] uppercase tracking-wider font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-semibold">
-                        {getTranslation(selectedProject.category)}
-                      </span>
-                      <h3 className="text-xl md:text-2xl font-bold text-zinc-900 tracking-tight mt-2 font-sans">
-                        {getTranslation(selectedProject.title)}
-                      </h3>
+                return (
+                  <>
+                    <div className="relative aspect-[21/9] bg-zinc-100 border-b border-zinc-150 flex items-center justify-center overflow-hidden" id="active_media_viewer">
+                      {activeMedia.type === 'video' ? (
+                        <iframe
+                          src={activeMedia.src}
+                          title={getTranslation(selectedProject.title)}
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      ) : activeMedia.src.startsWith('data:') || activeMedia.src.startsWith('http') ? (
+                        <img
+                          src={activeMedia.src}
+                          alt={getTranslation(selectedProject.title)}
+                          referrerPolicy="no-referrer"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full scale-110 opacity-30">
+                          {renderProjectThumbnail(activeMedia.src)}
+                        </div>
+                      )}
+                      
+                      {/* Title overlay if the active media is NOT a video and has NO multiple medias */}
+                      {activeMedia.type !== 'video' && !hasMultipleMedia && (
+                        <div className="absolute inset-0 bg-gradient-to-t from-white via-white/80 to-transparent flex items-end p-6">
+                          <div>
+                            <span className="text-[10px] uppercase tracking-wider font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-semibold">
+                              {getTranslation(selectedProject.category)}
+                            </span>
+                            <h3 className="text-xl md:text-2xl font-bold text-zinc-900 tracking-tight mt-2 font-sans">
+                              {getTranslation(selectedProject.title)}
+                            </h3>
+                          </div>
+                        </div>
+                      )}
                     </div>
-                  </div>
-                )}
-              </div>
+
+                    {/* Media Gallery Thumbnails Row */}
+                    {hasMultipleMedia && (
+                      <div className="flex gap-2 px-6 py-2.5 bg-zinc-50 border-b border-zinc-150 overflow-x-auto scrollbar-thin" id="gallery_thumbnails">
+                        {mediaItems.map((item, idx) => {
+                          const isActive = idx === activeMediaIndex;
+                          return (
+                            <button
+                              key={idx}
+                              onClick={() => setActiveMediaIndex(idx)}
+                              className={`relative w-16 sm:w-20 aspect-[16/10] rounded-lg border overflow-hidden shrink-0 transition-all cursor-pointer ${
+                                isActive 
+                                  ? 'border-teal-500 ring-2 ring-teal-500/20 scale-95 shadow-sm' 
+                                  : 'border-zinc-200 hover:border-zinc-400 opacity-70 hover:opacity-100'
+                              }`}
+                            >
+                              {item.type === 'video' ? (
+                                <div className="w-full h-full bg-zinc-950 flex flex-col items-center justify-center relative">
+                                  <span className="text-[7px] sm:text-[8px] font-mono text-zinc-400 tracking-tight leading-none">Video</span>
+                                  <div className="absolute inset-0 bg-teal-500/10 flex items-center justify-center">
+                                    <div className="w-5 h-5 rounded-full bg-teal-600/90 flex items-center justify-center text-white shadow">
+                                      <Play size={8} className="fill-current text-white translate-x-[0.5px]" />
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : item.src.startsWith('data:') || item.src.startsWith('http') ? (
+                                <img src={item.src} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                              ) : (
+                                <div className="w-full h-full scale-110 opacity-40">
+                                  {renderProjectThumbnail(item.src)}
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
+                );
+              })()}
 
               {/* Content body */}
               <div className="p-6 md:p-8 space-y-6">
                 
-                {/* If video URL exists, show title in body */}
-                {selectedProject.videoUrl && (
-                  <div className="border-b border-zinc-150 pb-4">
-                    <span className="text-[10px] uppercase tracking-wider font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-semibold">
-                      {getTranslation(selectedProject.category)}
-                    </span>
-                    <h3 className="text-xl md:text-2xl font-bold text-zinc-900 tracking-tight mt-2 font-sans">
-                      {getTranslation(selectedProject.title)}
-                    </h3>
-                  </div>
-                )}
+                {/* Show title in body if we are viewing a video OR if there are multiple media items */}
+                {(() => {
+                  const mediaItems = getProjectMedia(selectedProject);
+                  const activeMedia = mediaItems[activeMediaIndex] || mediaItems[0] || { type: 'image', src: selectedProject.image };
+                  const hasMultipleMedia = mediaItems.length > 1;
+                  
+                  if (activeMedia.type === 'video' || hasMultipleMedia) {
+                    return (
+                      <div className="border-b border-zinc-150 pb-4">
+                        <span className="text-[10px] uppercase tracking-wider font-mono text-teal-700 bg-teal-50 border border-teal-200 px-2 py-0.5 rounded-md font-semibold">
+                          {getTranslation(selectedProject.category)}
+                        </span>
+                        <h3 className="text-xl md:text-2xl font-bold text-zinc-900 tracking-tight mt-2 font-sans">
+                          {getTranslation(selectedProject.title)}
+                        </h3>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
 
                 {/* Performance Metrics panels */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-zinc-50 border border-zinc-200 p-4 rounded-xl">

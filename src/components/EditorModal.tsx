@@ -89,10 +89,14 @@ export default function EditorModal({
     metric1Val: '', metric1LabelEn: '', metric1LabelAr: '',
     metric2Val: '', metric2LabelEn: '', metric2LabelAr: '',
     metric3Val: '', metric3LabelEn: '', metric3LabelAr: '',
-    imageSrc: '', videoUrl: ''
+    imageSrc: '', videoUrl: '',
+    images: [] as string[],
+    videoUrls: [] as string[]
   });
 
   const [projectForm, setProjectForm] = useState(emptyProjectForm());
+  const [newAddImageUrl, setNewAddImageUrl] = useState('');
+  const [newAddVideoUrl, setNewAddVideoUrl] = useState('');
 
   // Initialize form when editing a project
   useEffect(() => {
@@ -119,11 +123,17 @@ export default function EditorModal({
         metric3LabelEn: editingProject.metrics[2]?.label.en || '',
         metric3LabelAr: editingProject.metrics[2]?.label.ar || '',
         imageSrc: editingProject.image,
-        videoUrl: editingProject.videoUrl || ''
+        videoUrl: editingProject.videoUrl || '',
+        images: editingProject.images || [],
+        videoUrls: editingProject.videoUrls || []
       });
+      setNewAddImageUrl('');
+      setNewAddVideoUrl('');
     } else if (isAddingProject) {
       setActiveTab('projects');
       setProjectForm(emptyProjectForm());
+      setNewAddImageUrl('');
+      setNewAddVideoUrl('');
     }
   }, [editingProject, isAddingProject]);
 
@@ -179,6 +189,57 @@ export default function EditorModal({
     reader.readAsDataURL(file);
   };
 
+  // Convert uploaded image to base64 data url for multiple additional images
+  const handleAdditionalImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    
+    Array.from(files).forEach((file: any) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        if (event.target?.result) {
+          setProjectForm(prev => ({
+            ...prev,
+            images: [...(prev.images || []), event.target!.result as string]
+          }));
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+    // Reset file input so same file can be selected again
+    e.target.value = '';
+  };
+
+  const handleAddProjectImage = (url: string) => {
+    if (!url.trim()) return;
+    setProjectForm(prev => ({
+      ...prev,
+      images: [...(prev.images || []), url.trim()]
+    }));
+  };
+
+  const handleRemoveProjectImage = (index: number) => {
+    setProjectForm(prev => ({
+      ...prev,
+      images: (prev.images || []).filter((_, i) => i !== index)
+    }));
+  };
+
+  const handleAddProjectVideo = (url: string) => {
+    if (!url.trim()) return;
+    setProjectForm(prev => ({
+      ...prev,
+      videoUrls: [...(prev.videoUrls || []), url.trim()]
+    }));
+  };
+
+  const handleRemoveProjectVideo = (index: number) => {
+    setProjectForm(prev => ({
+      ...prev,
+      videoUrls: (prev.videoUrls || []).filter((_, i) => i !== index)
+    }));
+  };
+
   // Save project (add new or update existing)
   const handleSaveProject = (e: React.FormEvent) => {
     e.preventDefault();
@@ -198,7 +259,9 @@ export default function EditorModal({
       results: { en: projectForm.resEn, ar: projectForm.resAr },
       metrics: newMetrics,
       image: projectForm.imageSrc || 'default',
-      videoUrl: projectForm.videoUrl || undefined
+      videoUrl: projectForm.videoUrl || undefined,
+      images: projectForm.images,
+      videoUrls: projectForm.videoUrls
     };
 
     let updatedProjects = [...data.projects];
@@ -887,6 +950,142 @@ export default function EditorModal({
                         onChange={(e) => setProjectForm({ ...projectForm, videoUrl: e.target.value })}
                         className="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs text-white focus:border-teal-500/50 outline-none"
                       />
+                    </div>
+                  </div>
+
+                  {/* MULTI-MEDIA GALLERY SECTION */}
+                  <div className="space-y-4 pt-4 border-t border-zinc-200">
+                    <div>
+                      <h5 className="text-[12px] font-sans font-bold text-zinc-800 uppercase tracking-tight">
+                        {lang === 'en' ? 'Additional Media Gallery (Optional)' : 'معرض وسائط إضافي للمشروع (اختياري)'}
+                      </h5>
+                      <p className="text-[10px] text-zinc-500">
+                        {lang === 'en' 
+                          ? 'Add multiple images and videos to make this project case study highly rich.' 
+                          : 'يمكنك إضافة صور وفيديوهات إضافية متعددة لجعل دراسة الحالة تفاعلية وغنية.'}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* MULTIPLE IMAGES PANEL */}
+                      <div className="space-y-3 bg-zinc-50 border border-zinc-200 p-4 rounded-xl shadow-sm">
+                        <label className="text-[11px] font-mono text-zinc-600 uppercase tracking-wider font-bold block">
+                          {lang === 'en' ? 'Additional Images' : 'صور إضافية'}
+                        </label>
+                        
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center gap-2">
+                            <label className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-zinc-200 bg-white hover:bg-zinc-50 text-[11px] text-zinc-700 font-semibold cursor-pointer select-none transition-all shadow-sm shrink-0">
+                              <Upload size={12} className="text-teal-600" />
+                              <span>{lang === 'en' ? 'Upload' : 'رفع ملف'}</span>
+                              <input 
+                                type="file" 
+                                accept="image/*" 
+                                multiple 
+                                onChange={handleAdditionalImageUpload} 
+                                className="hidden" 
+                              />
+                            </label>
+                            
+                            <div className="flex-1 flex gap-1">
+                              <input
+                                type="text"
+                                placeholder={lang === 'en' ? 'Or paste custom image URL' : 'أو الصق رابط صورة إضافية'}
+                                value={newAddImageUrl}
+                                onChange={(e) => setNewAddImageUrl(e.target.value)}
+                                className="flex-1 bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 focus:border-teal-500/50 outline-none shadow-sm"
+                              />
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (newAddImageUrl.trim()) {
+                                    handleAddProjectImage(newAddImageUrl);
+                                    setNewAddImageUrl('');
+                                  }
+                                }}
+                                className="p-1.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all shadow-sm"
+                              >
+                                <Plus size={14} />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* List of images */}
+                        {projectForm.images && projectForm.images.length > 0 ? (
+                          <div className="grid grid-cols-4 gap-2 max-h-[160px] overflow-y-auto p-1.5 border border-zinc-200 bg-white rounded-lg scrollbar-thin">
+                            {projectForm.images.map((img, idx) => (
+                              <div key={idx} className="relative aspect-[4/3] rounded-md border border-zinc-200 overflow-hidden bg-zinc-100 group">
+                                <img src={img} alt="Preview" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveProjectImage(idx)}
+                                  className="absolute inset-0 bg-black/60 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all cursor-pointer"
+                                  title={lang === 'en' ? 'Delete' : 'حذف'}
+                                >
+                                  <Trash2 size={12} className="text-white hover:scale-110 transition-transform" />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-6 border border-dashed border-zinc-250 bg-white rounded-lg text-[10px] text-zinc-400 italic">
+                            {lang === 'en' ? 'No additional images added.' : 'لم يتم إضافة صور إضافية بعد.'}
+                          </div>
+                        )}
+                      </div>
+
+                      {/* MULTIPLE VIDEOS PANEL */}
+                      <div className="space-y-3 bg-zinc-50 border border-zinc-200 p-4 rounded-xl shadow-sm">
+                        <label className="text-[11px] font-mono text-zinc-600 uppercase tracking-wider font-bold block">
+                          {lang === 'en' ? 'Additional Video Embeds' : 'روابط فيديو إضافية'}
+                        </label>
+
+                        <div className="flex gap-1">
+                          <input
+                            type="url"
+                            placeholder="https://www.youtube.com/embed/..."
+                            value={newAddVideoUrl}
+                            onChange={(e) => setNewAddVideoUrl(e.target.value)}
+                            className="flex-1 bg-white border border-zinc-200 rounded-lg px-2.5 py-1.5 text-xs text-zinc-800 focus:border-teal-500/50 outline-none shadow-sm"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (newAddVideoUrl.trim()) {
+                                handleAddProjectVideo(newAddVideoUrl);
+                                setNewAddVideoUrl('');
+                              }
+                            }}
+                            className="p-1.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-all shadow-sm"
+                          >
+                            <Plus size={14} />
+                          </button>
+                        </div>
+
+                        {/* List of videos */}
+                        {projectForm.videoUrls && projectForm.videoUrls.length > 0 ? (
+                          <div className="space-y-1.5 max-h-[160px] overflow-y-auto p-1 border border-zinc-200 bg-white rounded-lg scrollbar-thin">
+                            {projectForm.videoUrls.map((vid, idx) => (
+                              <div key={idx} className="flex items-center justify-between gap-2 p-1.5 bg-zinc-50 border border-zinc-150 rounded-lg text-xs">
+                                <span className="font-mono text-[9px] text-zinc-500 truncate flex-1">{vid}</span>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveProjectVideo(idx)}
+                                  className="p-1 hover:bg-rose-50 text-rose-600 rounded-md transition-all shrink-0 cursor-pointer"
+                                  title={lang === 'en' ? 'Delete' : 'حذف'}
+                                >
+                                  <Trash2 size={12} />
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="text-center py-6 border border-dashed border-zinc-250 bg-white rounded-lg text-[10px] text-zinc-400 italic">
+                            {lang === 'en' ? 'No additional video embeds added.' : 'لم يتم إضافة فيديوهات إضافية بعد.'}
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
 
