@@ -34,17 +34,17 @@ export default function Services({ data, lang }: ServicesProps) {
             <div className="flex items-center gap-2 mb-2">
               <span className="w-8 h-[1px] bg-teal-600"></span>
               <span className="text-xs uppercase tracking-widest text-teal-600 font-mono font-semibold">
-                {lang === 'en' ? 'Core Solutions' : 'مجالات التميز والخدمات'}
+                {data.profile.servicesSubtitle ? data.profile.servicesSubtitle[lang] : (lang === 'en' ? 'Core Solutions' : 'مجالات التميز والخدمات')}
               </span>
             </div>
             <h3 className="text-3xl font-bold tracking-tight text-zinc-900 font-sans">
-              {lang === 'en' ? 'Specialized Professional Services' : 'خدمات استشارية وتنفيذية متخصصة'}
+              {data.profile.servicesTitle ? data.profile.servicesTitle[lang] : (lang === 'en' ? 'Specialized Professional Services' : 'خدمات استشارية وتنفيذية متخصصة')}
             </h3>
           </div>
           <p className="text-xs sm:text-sm text-zinc-600 max-w-md font-sans">
-            {lang === 'en'
+            {data.profile.servicesDescription ? data.profile.servicesDescription[lang] : (lang === 'en'
               ? 'Tailored end-to-end consulting and technical execution for industrial and commercial operations.'
-              : 'خدمات برمجية وتحليلية مخصصة للشركات والقطاعات الصناعية لتحسين كفاءة التشغيل اليومي.'}
+              : 'خدمات برمجية وتحليلية مخصصة للشركات والقطاعات الصناعية لتحسين كفاءة التشغيل اليومي.')}
           </p>
         </div>
 

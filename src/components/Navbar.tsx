@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Globe, Settings, Lock, Unlock, Mail, FileDown } from 'lucide-react';
-import { BilingualText } from '../types';
+import { PortfolioData, BilingualText } from '../types';
 
 interface NavbarProps {
+  data: PortfolioData;
   lang: 'en' | 'ar';
   setLang: (lang: 'en' | 'ar') => void;
   isAdmin: boolean;
@@ -12,6 +13,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({
+  data,
   lang,
   setLang,
   isAdmin,
@@ -42,6 +44,11 @@ export default function Navbar({
     { label: { en: 'Why Me?', ar: 'لماذا أنا؟' }, href: '#why-me' },
   ];
 
+  const profile = data.profile;
+  const initials = profile.name.en
+    ? profile.name.en.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase()
+    : 'AS';
+
   return (
     <header className="sticky top-0 z-40 w-full border-b border-zinc-200/80 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -49,13 +56,15 @@ export default function Navbar({
         {/* Logo / Name */}
         <a href="#hero" className="flex items-center gap-3 group">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-tr from-teal-600 to-cyan-500 font-extrabold text-white font-sans text-xs tracking-wider shadow-lg shadow-teal-600/10 group-hover:shadow-teal-600/30 transition-all">
-            AS
+            {initials}
           </div>
           <div className="flex flex-col">
             <span className="font-sans text-xs font-bold tracking-tight text-zinc-900 hover:text-teal-600 transition-colors leading-none">
-              Abdelrahman Sherief
+              {profile.name[lang]}
             </span>
-            <span className="text-[9px] font-mono text-zinc-500 mt-0.5 leading-none">Senior Quality Engineer</span>
+            <span className="text-[9px] font-mono text-zinc-500 mt-0.5 leading-none max-w-[150px] sm:max-w-[250px] truncate">
+              {profile.headline[lang]}
+            </span>
           </div>
         </a>
 
@@ -127,7 +136,7 @@ export default function Navbar({
 
           {/* Email Shortcut */}
           <a
-            href="mailto:abdelrahmansherief6@gmail.com"
+            href={`mailto:${profile.email}`}
             className="p-2 rounded-lg bg-white border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:border-zinc-300 transition-all"
             title={lang === 'en' ? 'Contact Email' : 'البريد الإلكتروني'}
           >

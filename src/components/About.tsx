@@ -1,5 +1,6 @@
 import React from 'react';
-import { Award, GraduationCap, ChevronRight, CheckCircle2, Factory, ShieldCheck, Zap, GitMerge } from 'lucide-react';
+import { Award, GraduationCap } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { PortfolioData } from '../types';
 
 interface AboutProps {
@@ -10,20 +11,10 @@ interface AboutProps {
 export default function About({ data, lang }: AboutProps) {
   const profile = data.profile;
 
-  // Why Work With Me mapped to icons
+  // Why Work With Me mapped to icons dynamically
   const getWhyIcon = (iconName: string) => {
-    switch (iconName) {
-      case 'Factory':
-        return <Factory className="text-teal-600" size={20} />;
-      case 'Award':
-        return <ShieldCheck className="text-teal-600" size={20} />;
-      case 'GitMerge':
-        return <GitMerge className="text-teal-600" size={20} />;
-      case 'TrendingUp':
-        return <Zap className="text-teal-600" size={20} />;
-      default:
-        return <CheckCircle2 className="text-teal-600" size={20} />;
-    }
+    const IconComponent = (LucideIcons as any)[iconName] || LucideIcons.CheckCircle2;
+    return <IconComponent className="text-teal-600" size={20} />;
   };
 
   return (
@@ -38,11 +29,11 @@ export default function About({ data, lang }: AboutProps) {
             <div className="flex items-center gap-2">
               <span className="w-8 h-[1px] bg-teal-600"></span>
               <span className="text-xs uppercase tracking-widest text-teal-600 font-mono font-semibold">
-                {lang === 'en' ? 'Professional Biography' : 'السيرة الذاتية المهنية'}
+                {profile.aboutSubtitle ? profile.aboutSubtitle[lang] : (lang === 'en' ? 'Professional Biography' : 'السيرة الذاتية المهنية')}
               </span>
             </div>
             <h3 className="text-3xl font-bold tracking-tight text-zinc-900 font-sans">
-              {lang === 'en' ? 'Bridging Industrial Expertise with Data Analytics' : 'الربط بين الخبرة الصناعية العميقة وتحليل البيانات الذكية'}
+              {profile.aboutTitle ? profile.aboutTitle[lang] : (lang === 'en' ? 'Bridging Industrial Expertise with Data Analytics' : 'الربط بين الخبرة الصناعية العميقة وتحليل البيانات الذكية')}
             </h3>
             
             <div className="text-zinc-600 text-sm leading-relaxed space-y-4 font-sans font-light">
@@ -101,15 +92,15 @@ export default function About({ data, lang }: AboutProps) {
         <div id="why-me" className="mt-20 pt-16 border-t border-zinc-200">
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 border border-zinc-200 text-xs font-mono text-teal-700">
-              {lang === 'en' ? 'Core Value Proposition' : 'القيمة المضافة والشراكة'}
+              {profile.whyMeSubtitle ? profile.whyMeSubtitle[lang] : (lang === 'en' ? 'Core Value Proposition' : 'القيمة المضافة والشراكة')}
             </div>
             <h3 className="text-3xl font-bold tracking-tight text-zinc-900 font-sans">
-              {lang === 'en' ? 'Why Work With Me?' : 'لماذا تعمل معي؟'}
+              {profile.whyMeTitle ? profile.whyMeTitle[lang] : (lang === 'en' ? 'Why Work With Me?' : 'لماذا تعمل معي؟')}
             </h3>
             <p className="text-sm text-zinc-600">
-              {lang === 'en' 
+              {profile.whyMeDescription ? profile.whyMeDescription[lang] : (lang === 'en' 
                 ? 'Delivering measurable improvements and professional results at every phase of operations.' 
-                : 'تقديم تحسينات تشغيلية ملموسة ونتائج احترافية في كل مرحلة من مراحل التشغيل.'}
+                : 'تقديم تحسينات تشغيلية ملموسة ونتائج احترافية في كل مرحلة من مراحل التشغيل.')}
             </p>
           </div>
 

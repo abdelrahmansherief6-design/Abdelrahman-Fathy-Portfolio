@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { X, Save, Plus, Trash2, Upload, FileText, Layout, ListPlus, Database, Award, GraduationCap, Briefcase, Sparkles, AlertCircle } from 'lucide-react';
-import { PortfolioData, Project, Skill, Service, Metric, Achievement, EducationItem, CertificateItem } from '../types';
+import { X, Save, Plus, Trash2, Upload, FileText, Layout, ListPlus, Database, Award, GraduationCap, Briefcase, Sparkles, AlertCircle, HelpCircle, SlidersHorizontal } from 'lucide-react';
+import { PortfolioData, Project, Skill, Service, Metric, Achievement, EducationItem, CertificateItem, WhyWorkWithMeItem, HighlightStat } from '../types';
 
 interface EditorModalProps {
   data: PortfolioData;
@@ -14,7 +14,7 @@ interface EditorModalProps {
   setIsAddingProject: (isAdding: boolean) => void;
 }
 
-type TabType = 'bio' | 'achievements' | 'services' | 'skills' | 'projects' | 'edu_certs';
+type TabType = 'bio' | 'achievements' | 'services' | 'skills' | 'projects' | 'edu_certs' | 'why_me' | 'stats' | 'headings';
 
 export default function EditorModal({
   data,
@@ -42,6 +42,43 @@ export default function EditorModal({
   const [email, setEmail] = useState(data.profile.email);
   const [linkedin, setLinkedin] = useState(data.profile.linkedin);
   const [avatar, setAvatar] = useState(data.profile.avatar);
+  const [locationEn, setLocationEn] = useState(data.profile.location?.en || 'Giza, Egypt');
+  const [locationAr, setLocationAr] = useState(data.profile.location?.ar || 'الجيزة، مصر');
+
+  // Section Headers States
+  const [aboutTitleEn, setAboutTitleEn] = useState(data.profile.aboutTitle?.en || '');
+  const [aboutTitleAr, setAboutTitleAr] = useState(data.profile.aboutTitle?.ar || '');
+  const [aboutSubtitleEn, setAboutSubtitleEn] = useState(data.profile.aboutSubtitle?.en || '');
+  const [aboutSubtitleAr, setAboutSubtitleAr] = useState(data.profile.aboutSubtitle?.ar || '');
+
+  const [whyMeTitleEn, setWhyMeTitleEn] = useState(data.profile.whyMeTitle?.en || '');
+  const [whyMeTitleAr, setWhyMeTitleAr] = useState(data.profile.whyMeTitle?.ar || '');
+  const [whyMeSubtitleEn, setWhyMeSubtitleEn] = useState(data.profile.whyMeSubtitle?.en || '');
+  const [whyMeSubtitleAr, setWhyMeSubtitleAr] = useState(data.profile.whyMeSubtitle?.ar || '');
+  const [whyMeDescriptionEn, setWhyMeDescriptionEn] = useState(data.profile.whyMeDescription?.en || '');
+  const [whyMeDescriptionAr, setWhyMeDescriptionAr] = useState(data.profile.whyMeDescription?.ar || '');
+
+  const [servicesTitleEn, setServicesTitleEn] = useState(data.profile.servicesTitle?.en || '');
+  const [servicesTitleAr, setServicesTitleAr] = useState(data.profile.servicesTitle?.ar || '');
+  const [servicesSubtitleEn, setServicesSubtitleEn] = useState(data.profile.servicesSubtitle?.en || '');
+  const [servicesSubtitleAr, setServicesSubtitleAr] = useState(data.profile.servicesSubtitle?.ar || '');
+  const [servicesDescriptionEn, setServicesDescriptionEn] = useState(data.profile.servicesDescription?.en || '');
+  const [servicesDescriptionAr, setServicesDescriptionAr] = useState(data.profile.servicesDescription?.ar || '');
+
+  const [skillsTitleEn, setSkillsTitleEn] = useState(data.profile.skillsTitle?.en || '');
+  const [skillsTitleAr, setSkillsTitleAr] = useState(data.profile.skillsTitle?.ar || '');
+  const [skillsSubtitleEn, setSkillsSubtitleEn] = useState(data.profile.skillsSubtitle?.en || '');
+  const [skillsSubtitleAr, setSkillsSubtitleAr] = useState(data.profile.skillsSubtitle?.ar || '');
+  const [skillsDescriptionEn, setSkillsDescriptionEn] = useState(data.profile.skillsDescription?.en || '');
+  const [skillsDescriptionAr, setSkillsDescriptionAr] = useState(data.profile.skillsDescription?.ar || '');
+
+  const [projectsTitleEn, setProjectsTitleEn] = useState(data.profile.projectsTitle?.en || '');
+  const [projectsTitleAr, setProjectsTitleAr] = useState(data.profile.projectsTitle?.ar || '');
+  const [projectsSubtitleEn, setProjectsSubtitleEn] = useState(data.profile.projectsSubtitle?.en || '');
+  const [projectsSubtitleAr, setProjectsSubtitleAr] = useState(data.profile.projectsSubtitle?.ar || '');
+
+  const [heroOverlaySkillsEn, setHeroOverlaySkillsEn] = useState(data.profile.heroOverlaySkills?.en || '');
+  const [heroOverlaySkillsAr, setHeroOverlaySkillsAr] = useState(data.profile.heroOverlaySkills?.ar || '');
 
   // Lists states for local edits before save
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -49,6 +86,8 @@ export default function EditorModal({
   const [services, setServices] = useState<Service[]>([]);
   const [education, setEducation] = useState<EducationItem[]>([]);
   const [certificates, setCertificates] = useState<CertificateItem[]>([]);
+  const [whyWorkWithMe, setWhyWorkWithMe] = useState<WhyWorkWithMeItem[]>([]);
+  const [stats, setStats] = useState<HighlightStat[]>([]);
 
   // Sync state with incoming props on load or tab shift
   useEffect(() => {
@@ -65,12 +104,79 @@ export default function EditorModal({
       setEmail(data.profile.email);
       setLinkedin(data.profile.linkedin);
       setAvatar(data.profile.avatar);
+      setLocationEn(data.profile.location?.en || 'Giza, Egypt');
+      setLocationAr(data.profile.location?.ar || 'الجيزة، مصر');
+
+      setAboutTitleEn(data.profile.aboutTitle?.en || 'Bridging Industrial Expertise with Data Analytics');
+      setAboutTitleAr(data.profile.aboutTitle?.ar || 'الربط بين الخبرة الصناعية العميقة وتحليل البيانات الذكية');
+      setAboutSubtitleEn(data.profile.aboutSubtitle?.en || 'Professional Biography');
+      setAboutSubtitleAr(data.profile.aboutSubtitle?.ar || 'السيرة الذاتية المهنية');
+
+      setWhyMeTitleEn(data.profile.whyMeTitle?.en || 'Why Work With Me?');
+      setWhyMeTitleAr(data.profile.whyMeTitle?.ar || 'لماذا تعمل معي؟');
+      setWhyMeSubtitleEn(data.profile.whyMeSubtitle?.en || 'Core Value Proposition');
+      setWhyMeSubtitleAr(data.profile.whyMeSubtitle?.ar || 'القيمة المضافة والشراكة');
+      setWhyMeDescriptionEn(data.profile.whyMeDescription?.en || 'Delivering measurable improvements and professional results at every phase of operations.');
+      setWhyMeDescriptionAr(data.profile.whyMeDescription?.ar || 'تقديم تحسينات تشغيلية ملموسة ونتائج احترافية في كل مرحلة من مراحل التشغيل.');
+
+      setServicesTitleEn(data.profile.servicesTitle?.en || 'Specialized Professional Services');
+      setServicesTitleAr(data.profile.servicesTitle?.ar || 'خدمات استشارية وتنفيذية متخصصة');
+      setServicesSubtitleEn(data.profile.servicesSubtitle?.en || 'Core Solutions');
+      setServicesSubtitleAr(data.profile.servicesSubtitle?.ar || 'مجالات التميز والخدمات');
+      setServicesDescriptionEn(data.profile.servicesDescription?.en || 'Tailored end-to-end consulting and technical execution for industrial and commercial operations.');
+      setServicesDescriptionAr(data.profile.servicesDescription?.ar || 'خدمات برمجية وتحليلية مخصصة للشركات والقطاعات الصناعية لتحسين كفاءة التشغيل اليومي.');
+
+      setSkillsTitleEn(data.profile.skillsTitle?.en || 'Expertise & Technical Stack');
+      setSkillsTitleAr(data.profile.skillsTitle?.ar || 'القدرات الفنية والبرمجية');
+      setSkillsSubtitleEn(data.profile.skillsSubtitle?.en || 'Core Capabilities');
+      setSkillsSubtitleAr(data.profile.skillsSubtitle?.ar || 'مصفوفة القدرات والمهارات');
+      setSkillsDescriptionEn(data.profile.skillsDescription?.en || 'A breakdown of specialized software, algorithms, and engineering frameworks utilized.');
+      setSkillsDescriptionAr(data.profile.skillsDescription?.ar || 'تفصيل للمهارات البرمجية والأدوات التقنية التي أتقنها لخدمة التحول الرقمي وحلول الجودة.');
+
+      setProjectsTitleEn(data.profile.projectsTitle?.en || 'Engineering Case Studies');
+      setProjectsTitleAr(data.profile.projectsTitle?.ar || 'مشاريع هندسية وقصص نجاح حقيقية');
+      setProjectsSubtitleEn(data.profile.projectsSubtitle?.en || 'Interactive Portfolio');
+      setProjectsSubtitleAr(data.profile.projectsSubtitle?.ar || 'معرض المشروعات والحلول المنجزة');
+
+      setHeroOverlaySkillsEn(data.profile.heroOverlaySkills?.en || 'Power BI • SQL • Automate');
+      setHeroOverlaySkillsAr(data.profile.heroOverlaySkills?.ar || 'Power BI • SQL • أتمتة');
 
       setAchievements([...data.achievements]);
       setSkills([...data.skills]);
       setServices([...data.services]);
       setEducation([...data.education]);
       setCertificates([...data.certificates]);
+      setWhyWorkWithMe(data.whyWorkWithMe ? [...data.whyWorkWithMe] : []);
+      setStats(data.stats ? [...data.stats] : [
+        {
+          id: "stat_1",
+          value: "6+",
+          suffix: { en: "Years", ar: "سنوات خبرة" },
+          label: { en: "Industrial Expertise", ar: "خبرة في القطاع الصناعي" },
+          iconName: "Award"
+        },
+        {
+          id: "stat_2",
+          value: "95%",
+          suffix: { en: "", ar: "" },
+          label: { en: "Lab Utilization (from 70%)", ar: "استغلال المختبرات (من 70%)" },
+          iconName: "TrendingUp"
+        },
+        {
+          id: "stat_3",
+          value: "0",
+          suffix: { en: "%", ar: "%" },
+          label: { en: "Ledger Discrepancies", ar: "نسبة الفروقات التشغيلية" },
+          iconName: "Cpu"
+        },
+        {
+          id: "stat_4",
+          value: "100%",
+          suffix: { en: "", ar: "" },
+          label: { en: "Digital Shop floor Adoption", ar: "الاعتماد الرقمي للعمال" },
+          iconName: "Database"
+        }
+      ]);
     }
   }, [isOpen, data]);
 
@@ -151,11 +257,56 @@ export default function EditorModal({
         avatar: avatar,
         email: email,
         phone: phone,
-        linkedin: linkedin
+        linkedin: linkedin,
+        location: { en: locationEn, ar: locationAr }
       }
     };
     setData(updated);
     alert(lang === 'en' ? 'Profile details saved successfully!' : 'تم حفظ السيرة الذاتية ومعلومات الاتصال بنجاح!');
+  };
+
+  // Save Section Headings and Custom Subtitles
+  const handleSaveHeadings = () => {
+    const updated = {
+      ...data,
+      profile: {
+        ...data.profile,
+        aboutTitle: { en: aboutTitleEn, ar: aboutTitleAr },
+        aboutSubtitle: { en: aboutSubtitleEn, ar: aboutSubtitleAr },
+        whyMeTitle: { en: whyMeTitleEn, ar: whyMeTitleAr },
+        whyMeSubtitle: { en: whyMeSubtitleEn, ar: whyMeSubtitleAr },
+        whyMeDescription: { en: whyMeDescriptionEn, ar: whyMeDescriptionAr },
+        servicesTitle: { en: servicesTitleEn, ar: servicesTitleAr },
+        servicesSubtitle: { en: servicesSubtitleEn, ar: servicesSubtitleAr },
+        servicesDescription: { en: servicesDescriptionEn, ar: servicesDescriptionAr },
+        skillsTitle: { en: skillsTitleEn, ar: skillsTitleAr },
+        skillsSubtitle: { en: skillsSubtitleEn, ar: skillsSubtitleAr },
+        skillsDescription: { en: skillsDescriptionEn, ar: skillsDescriptionAr },
+        projectsTitle: { en: projectsTitleEn, ar: projectsTitleAr },
+        projectsSubtitle: { en: projectsSubtitleEn, ar: projectsSubtitleAr },
+        heroOverlaySkills: { en: heroOverlaySkillsEn, ar: heroOverlaySkillsAr }
+      }
+    };
+    setData(updated);
+    alert(lang === 'en' ? 'Section headings saved successfully!' : 'تم حفظ عناوين وأوصاف الأقسام بنجاح!');
+  };
+
+  // Save Why Work With Me list
+  const handleSaveWhyWorkWithMe = () => {
+    setData({
+      ...data,
+      whyWorkWithMe: whyWorkWithMe
+    });
+    alert(lang === 'en' ? 'Why Me section updated successfully!' : 'تم حفظ قسم "لماذا أنا؟" بنجاح!');
+  };
+
+  // Save Highlight Stats list
+  const handleSaveStats = () => {
+    setData({
+      ...data,
+      stats: stats
+    });
+    alert(lang === 'en' ? 'Highlight stats updated successfully!' : 'تم حفظ إحصائيات الهيرو بنجاح!');
   };
 
   // Convert uploaded image to base64 data url for profile photo
@@ -447,6 +598,30 @@ export default function EditorModal({
             <Award size={14} />
             <span>{lang === 'en' ? 'Education & Certs' : 'الشهادات والمؤهلات'}</span>
           </button>
+
+          <button
+            onClick={() => { setActiveTab('why_me'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'why_me' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
+          >
+            <HelpCircle size={14} />
+            <span>{lang === 'en' ? 'Why Me' : 'لماذا أنا'}</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('stats'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'stats' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
+          >
+            <Briefcase size={14} />
+            <span>{lang === 'en' ? 'Hero Stats' : 'إحصائيات الهيرو'}</span>
+          </button>
+
+          <button
+            onClick={() => { setActiveTab('headings'); setEditingProject(null); setIsAddingProject(false); }}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-all shrink-0 cursor-pointer ${activeTab === 'headings' ? 'bg-white border border-zinc-200 text-teal-700 font-semibold shadow-sm' : 'text-zinc-500 hover:text-zinc-800'}`}
+          >
+            <SlidersHorizontal size={14} />
+            <span>{lang === 'en' ? 'Section Headings' : 'عناوين الأقسام والمسميات'}</span>
+          </button>
         </div>
 
         {/* Content Scroll Area */}
@@ -575,6 +750,28 @@ export default function EditorModal({
                     value={linkedin}
                     onChange={(e) => setLinkedin(e.target.value)}
                     className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50 shadow-sm"
+                  />
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-1.5">
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Location (EN)</label>
+                  <input
+                    type="text"
+                    value={locationEn}
+                    onChange={(e) => setLocationEn(e.target.value)}
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-800 focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/25 outline-none shadow-sm"
+                  />
+                </div>
+                <div className="space-y-1.5 text-right">
+                  <label className="text-[11px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">الموقع / المدينة (AR)</label>
+                  <input
+                    type="text"
+                    value={locationAr}
+                    onChange={(e) => setLocationAr(e.target.value)}
+                    className="w-full bg-white border border-zinc-200 rounded-xl px-3 py-2 text-xs text-zinc-800 focus:border-teal-500/50 focus:ring-1 focus:ring-teal-500/25 outline-none text-right font-sans shadow-sm"
                   />
                 </div>
               </div>
@@ -1573,6 +1770,572 @@ export default function EditorModal({
                 </button>
               </div>
 
+            </div>
+          )}
+
+          {/* TAB 7: WHY ME? */}
+          {activeTab === 'why_me' && (
+            <div className="space-y-6 animate-fade-in" id="edit_tab_why_me">
+              <div className="p-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-xl text-[11px] flex items-center gap-2 font-sans font-medium">
+                <AlertCircle size={16} className="text-teal-600 shrink-0" />
+                <span>
+                  {lang === 'en' 
+                    ? 'Edit the "Why Work With Me?" section blocks displayed in the About section.' 
+                    : 'قم بتعديل كتل قسم "لماذا أنا؟" المعروضة في صفحة النبذة التعريفية.'}
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {whyWorkWithMe.map((item, idx) => (
+                  <div key={item.id} className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">TITLE (EN)</label>
+                        <input
+                          type="text"
+                          value={item.title.en}
+                          onChange={(e) => {
+                            const next = [...whyWorkWithMe];
+                            next[idx].title.en = e.target.value;
+                            setWhyWorkWithMe(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                        />
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">العنوان (AR)</label>
+                        <input
+                          type="text"
+                          value={item.title.ar}
+                          onChange={(e) => {
+                            const next = [...whyWorkWithMe];
+                            next[idx].title.ar = e.target.value;
+                            setWhyWorkWithMe(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">DESCRIPTION (EN)</label>
+                        <textarea
+                          rows={2}
+                          value={item.description.en}
+                          onChange={(e) => {
+                            const next = [...whyWorkWithMe];
+                            next[idx].description.en = e.target.value;
+                            setWhyWorkWithMe(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg p-3 text-xs text-zinc-800 outline-none resize-none focus:border-teal-500/50"
+                        />
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">الوصف (AR)</label>
+                        <textarea
+                          rows={2}
+                          value={item.description.ar}
+                          onChange={(e) => {
+                            const next = [...whyWorkWithMe];
+                            next[idx].description.ar = e.target.value;
+                            setWhyWorkWithMe(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg p-3 text-xs text-zinc-800 text-right font-sans outline-none resize-none focus:border-teal-500/50"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Icon Name (lucide-react, e.g. Binary, Zap, Cpu, LayoutDashboard)</label>
+                      <input
+                        type="text"
+                        value={item.iconName}
+                        onChange={(e) => {
+                          const next = [...whyWorkWithMe];
+                          next[idx].iconName = e.target.value;
+                          setWhyWorkWithMe(next);
+                        }}
+                        className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-zinc-200">
+                <button
+                  type="button"
+                  onClick={handleSaveWhyWorkWithMe}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs cursor-pointer shadow-md transition-all"
+                >
+                  <Save size={14} />
+                  <span>{lang === 'en' ? 'Save Why Me Block' : 'حفظ التغييرات'}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 8: HIGHLIGHT STATS */}
+          {activeTab === 'stats' && (
+            <div className="space-y-6 animate-fade-in" id="edit_tab_stats">
+              <div className="p-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-xl text-[11px] flex items-center gap-2 font-sans font-medium">
+                <AlertCircle size={16} className="text-teal-600 shrink-0" />
+                <span>
+                  {lang === 'en' 
+                    ? 'Edit the 4 main highlight stats cards that appear on the hero section.' 
+                    : 'قم بتعديل كروت الإحصائيات الأربعة الرئيسية المعروضة في واجهة الموقع (الهيرو).'}
+                </span>
+              </div>
+
+              <div className="space-y-4">
+                {stats.map((stat, idx) => (
+                  <div key={stat.id || idx} className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">STAT VALUE (e.g. 6+, 95%)</label>
+                        <input
+                          type="text"
+                          value={stat.value}
+                          onChange={(e) => {
+                            const next = [...stats];
+                            next[idx].value = e.target.value;
+                            setStats(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">SUFFIX EN</label>
+                        <input
+                          type="text"
+                          value={stat.suffix.en}
+                          onChange={(e) => {
+                            const next = [...stats];
+                            next[idx].suffix.en = e.target.value;
+                            setStats(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                        />
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">اللاحقة AR</label>
+                        <input
+                          type="text"
+                          value={stat.suffix.ar}
+                          onChange={(e) => {
+                            const next = [...stats];
+                            next[idx].suffix.ar = e.target.value;
+                            setStats(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">LABEL (EN)</label>
+                        <input
+                          type="text"
+                          value={stat.label.en}
+                          onChange={(e) => {
+                            const next = [...stats];
+                            next[idx].label.en = e.target.value;
+                            setStats(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                        />
+                      </div>
+                      <div className="space-y-1 text-right">
+                        <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">العنوان AR</label>
+                        <input
+                          type="text"
+                          value={stat.label.ar}
+                          onChange={(e) => {
+                            const next = [...stats];
+                            next[idx].label.ar = e.target.value;
+                            setStats(next);
+                          }}
+                          className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider block font-bold">Icon Name (Award, TrendingUp, Cpu, Database)</label>
+                      <input
+                        type="text"
+                        value={stat.iconName}
+                        onChange={(e) => {
+                          const next = [...stats];
+                          next[idx].iconName = e.target.value;
+                          setStats(next);
+                        }}
+                        className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-zinc-200">
+                <button
+                  type="button"
+                  onClick={handleSaveStats}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs cursor-pointer shadow-md transition-all"
+                >
+                  <Save size={14} />
+                  <span>{lang === 'en' ? 'Save Stats Block' : 'حفظ التغييرات'}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 9: SECTION HEADINGS & CUSTOM LABELS */}
+          {activeTab === 'headings' && (
+            <div className="space-y-6 animate-fade-in" id="edit_tab_headings">
+              <div className="p-3 bg-teal-50 border border-teal-200 text-teal-800 rounded-xl text-[11px] flex items-center gap-2 font-sans font-medium">
+                <AlertCircle size={16} className="text-teal-600 shrink-0" />
+                <span>
+                  {lang === 'en'
+                    ? 'Fully customize every single heading, subtitle, description, and status tag on the home page.'
+                    : 'قم بتخصيص كل عنوان رئيسي وفرعي ووصف وجمل توضيحية في جميع أقسام الموقع بالكامل.'}
+                </span>
+              </div>
+
+              {/* 1. Hero Overlay Badge */}
+              <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-teal-700 uppercase tracking-wider font-sans">
+                  {lang === 'en' ? '1. Hero Portrait Floating Badge' : '1. الشارة العائمة على صورة الهيرو'}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Skills Badge Text (EN)</label>
+                    <input
+                      type="text"
+                      value={heroOverlaySkillsEn}
+                      onChange={(e) => setHeroOverlaySkillsEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">نص الشارة العائمة (AR)</label>
+                    <input
+                      type="text"
+                      value={heroOverlaySkillsAr}
+                      onChange={(e) => setHeroOverlaySkillsAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 2. About Section Headings */}
+              <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-teal-700 uppercase tracking-wider font-sans">
+                  {lang === 'en' ? '2. About Me Section Headings' : '2. عناوين قسم "عني"'}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Subtitle (EN)</label>
+                    <input
+                      type="text"
+                      value={aboutSubtitleEn}
+                      onChange={(e) => setAboutSubtitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الفرعي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={aboutSubtitleAr}
+                      onChange={(e) => setAboutSubtitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Main Title (EN)</label>
+                    <input
+                      type="text"
+                      value={aboutTitleEn}
+                      onChange={(e) => setAboutTitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الرئيسي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={aboutTitleAr}
+                      onChange={(e) => setAboutTitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Why Me Section Headings */}
+              <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-teal-700 uppercase tracking-wider font-sans">
+                  {lang === 'en' ? '3. "Why Work With Me?" Headings' : '3. عناوين قسم "لماذا تعمل معي؟"'}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Subtitle (EN)</label>
+                    <input
+                      type="text"
+                      value={whyMeSubtitleEn}
+                      onChange={(e) => setWhyMeSubtitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الفرعي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={whyMeSubtitleAr}
+                      onChange={(e) => setWhyMeSubtitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Main Title (EN)</label>
+                    <input
+                      type="text"
+                      value={whyMeTitleEn}
+                      onChange={(e) => setWhyMeTitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الرئيسي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={whyMeTitleAr}
+                      onChange={(e) => setWhyMeTitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Description (EN)</label>
+                    <textarea
+                      rows={2}
+                      value={whyMeDescriptionEn}
+                      onChange={(e) => setWhyMeDescriptionEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">وصف القسم (AR)</label>
+                    <textarea
+                      rows={2}
+                      value={whyMeDescriptionAr}
+                      onChange={(e) => setWhyMeDescriptionAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 4. Services Section Headings */}
+              <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-teal-700 uppercase tracking-wider font-sans">
+                  {lang === 'en' ? '4. Services Section Headings' : '4. عناوين قسم "الخدمات والاستشارات"'}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Subtitle (EN)</label>
+                    <input
+                      type="text"
+                      value={servicesSubtitleEn}
+                      onChange={(e) => setServicesSubtitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الفرعي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={servicesSubtitleAr}
+                      onChange={(e) => setServicesSubtitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Main Title (EN)</label>
+                    <input
+                      type="text"
+                      value={servicesTitleEn}
+                      onChange={(e) => setServicesTitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الرئيسي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={servicesTitleAr}
+                      onChange={(e) => setServicesTitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Description (EN)</label>
+                    <textarea
+                      rows={2}
+                      value={servicesDescriptionEn}
+                      onChange={(e) => setServicesDescriptionEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">وصف القسم (AR)</label>
+                    <textarea
+                      rows={2}
+                      value={servicesDescriptionAr}
+                      onChange={(e) => setServicesDescriptionAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 5. Skills Section Headings */}
+              <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-teal-700 uppercase tracking-wider font-sans">
+                  {lang === 'en' ? '5. Skills Section Headings' : '5. عناوين قسم "المهارات الفنية"'}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Subtitle (EN)</label>
+                    <input
+                      type="text"
+                      value={skillsSubtitleEn}
+                      onChange={(e) => setSkillsSubtitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الفرعي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={skillsSubtitleAr}
+                      onChange={(e) => setSkillsSubtitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Main Title (EN)</label>
+                    <input
+                      type="text"
+                      value={skillsTitleEn}
+                      onChange={(e) => setSkillsTitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الرئيسي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={skillsTitleAr}
+                      onChange={(e) => setSkillsTitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Description (EN)</label>
+                    <textarea
+                      rows={2}
+                      value={skillsDescriptionEn}
+                      onChange={(e) => setSkillsDescriptionEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">وصف القسم (AR)</label>
+                    <textarea
+                      rows={2}
+                      value={skillsDescriptionAr}
+                      onChange={(e) => setSkillsDescriptionAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* 6. Projects Section Headings */}
+              <div className="p-4 bg-zinc-50 border border-zinc-200 rounded-xl space-y-4 shadow-sm">
+                <h4 className="text-xs font-bold text-teal-700 uppercase tracking-wider font-sans">
+                  {lang === 'en' ? '6. Projects Portfolio Headings' : '6. عناوين معرض المشروعات'}
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Section Subtitle (EN)</label>
+                    <input
+                      type="text"
+                      value={projectsSubtitleEn}
+                      onChange={(e) => setProjectsSubtitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الفرعي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={projectsSubtitleAr}
+                      onChange={(e) => setProjectsSubtitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">Main Title (EN)</label>
+                    <input
+                      type="text"
+                      value={projectsTitleEn}
+                      onChange={(e) => setProjectsTitleEn(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                  <div className="space-y-1 text-right">
+                    <label className="text-[10px] font-mono text-zinc-500 uppercase block font-bold">العنوان الرئيسي للقسم (AR)</label>
+                    <input
+                      type="text"
+                      value={projectsTitleAr}
+                      onChange={(e) => setProjectsTitleAr(e.target.value)}
+                      className="w-full bg-white border border-zinc-200 rounded-lg px-3 py-1.5 text-xs text-zinc-800 text-right font-sans outline-none focus:border-teal-500/50"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-end pt-4 border-t border-zinc-200">
+                <button
+                  type="button"
+                  onClick={handleSaveHeadings}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs cursor-pointer shadow-md transition-all"
+                >
+                  <Save size={14} />
+                  <span>{lang === 'en' ? 'Save All Headings' : 'حفظ جميع العناوين'}</span>
+                </button>
+              </div>
             </div>
           )}
 

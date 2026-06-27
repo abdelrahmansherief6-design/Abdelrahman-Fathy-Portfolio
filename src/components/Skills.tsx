@@ -68,15 +68,15 @@ export default function Skills({ data, lang }: SkillsProps) {
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-100 border border-zinc-200 text-xs font-mono text-teal-700">
-            {lang === 'en' ? 'Core Capabilities' : 'مصفوفة القدرات والمهارات'}
+            {data.profile.skillsSubtitle ? data.profile.skillsSubtitle[lang] : (lang === 'en' ? 'Core Capabilities' : 'مصفوفة القدرات والمهارات')}
           </div>
           <h3 className="text-3xl font-bold tracking-tight text-zinc-900 font-sans">
-            {lang === 'en' ? 'Expertise & Technical Stack' : 'القدرات الفنية والبرمجية'}
+            {data.profile.skillsTitle ? data.profile.skillsTitle[lang] : (lang === 'en' ? 'Expertise & Technical Stack' : 'القدرات الفنية والبرمجية')}
           </h3>
           <p className="text-sm text-zinc-600">
-            {lang === 'en'
+            {data.profile.skillsDescription ? data.profile.skillsDescription[lang] : (lang === 'en'
               ? 'A breakdown of specialized software, algorithms, and engineering frameworks utilized.'
-              : 'تفصيل للمهارات البرمجية والأدوات التقنية التي أتقنها لخدمة التحول الرقمي وحلول الجودة.'}
+              : 'تفصيل للمهارات البرمجية والأدوات التقنية التي أتقنها لخدمة التحول الرقمي وحلول الجودة.')}
           </p>
         </div>
 

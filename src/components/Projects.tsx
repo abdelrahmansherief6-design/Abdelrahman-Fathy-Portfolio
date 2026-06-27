@@ -210,11 +210,11 @@ export default function Projects({
             <div className="flex items-center gap-2 mb-2">
               <span className="w-8 h-[1px] bg-teal-600"></span>
               <span className="text-xs uppercase tracking-widest text-teal-600 font-mono font-semibold">
-                {lang === 'en' ? 'Interactive Portfolio' : 'معرض المشروعات والحلول المنجزة'}
+                {data.profile.projectsSubtitle ? data.profile.projectsSubtitle[lang] : (lang === 'en' ? 'Interactive Portfolio' : 'معرض المشروعات والحلول المنجزة')}
               </span>
             </div>
             <h3 className="text-3xl font-bold tracking-tight text-zinc-900 font-sans">
-              {lang === 'en' ? 'Engineering Case Studies' : 'مشاريع هندسية وقصص نجاح حقيقية'}
+              {data.profile.projectsTitle ? data.profile.projectsTitle[lang] : (lang === 'en' ? 'Engineering Case Studies' : 'مشاريع هندسية وقصص نجاح حقيقية')}
             </h3>
           </div>
 

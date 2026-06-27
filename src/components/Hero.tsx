@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowUpRight, TrendingUp, Cpu, Database, Mail, Award, Linkedin, MapPin, Smartphone, Code, Camera, User } from 'lucide-react';
+import { ArrowUpRight, Mail, MapPin, Linkedin, Smartphone, User, Camera, Award } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { PortfolioData } from '../types';
 
 interface HeroProps {
@@ -12,33 +13,41 @@ interface HeroProps {
 export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
   const profile = data.profile;
 
-  // Highlights row
-  const highlightStats = [
+  const statsList = data.stats && data.stats.length > 0 ? data.stats : [
     {
+      id: "stat_1",
       value: "6+",
-      suffix: lang === 'en' ? "Years" : "سنوات خبرة",
+      suffix: { en: "Years", ar: "سنوات خبرة" },
       label: { en: "Industrial Expertise", ar: "خبرة في القطاع الصناعي" },
-      icon: <Award className="text-teal-600" size={18} />
+      iconName: "Award"
     },
     {
+      id: "stat_2",
       value: "95%",
-      suffix: "",
+      suffix: { en: "", ar: "" },
       label: { en: "Lab Utilization (from 70%)", ar: "استغلال المختبرات (من 70%)" },
-      icon: <TrendingUp className="text-teal-600" size={18} />
+      iconName: "TrendingUp"
     },
     {
+      id: "stat_3",
       value: "0",
-      suffix: "%",
+      suffix: { en: "%", ar: "%" },
       label: { en: "Ledger Discrepancies", ar: "نسبة الفروقات التشغيلية" },
-      icon: <Cpu className="text-teal-600" size={18} />
+      iconName: "Cpu"
     },
     {
+      id: "stat_4",
       value: "100%",
-      suffix: "",
+      suffix: { en: "", ar: "" },
       label: { en: "Digital Shop floor Adoption", ar: "الاعتماد الرقمي للعمال" },
-      icon: <Database className="text-teal-600" size={18} />
+      iconName: "Database"
     }
   ];
+
+  const getStatIcon = (iconName: string) => {
+    const IconComponent = (LucideIcons as any)[iconName] || LucideIcons.Award;
+    return <IconComponent className="text-teal-600" size={18} />;
+  };
 
   return (
     <section id="hero" className="relative min-h-[85vh] flex flex-col justify-center py-12 md:py-20 overflow-hidden">
@@ -48,7 +57,7 @@ export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
       {/* Ambient neon radial glows */}
       <div className="absolute top-10 right-1/4 w-[25rem] h-[25rem] bg-teal-500/5 rounded-full blur-[120px] pointer-events-none"></div>
       <div className="absolute bottom-10 left-10 w-[20rem] h-[20rem] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-
+ 
       <div className="mx-auto max-w-7xl w-full px-1 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           
@@ -69,11 +78,8 @@ export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
             {/* Display Title / English Name Layout */}
             <div className="space-y-4">
               <div className="flex flex-col gap-1">
-                <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-zinc-900 font-sans leading-none">
-                  Abdelrahman
-                </h1>
-                <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-teal-600 font-sans leading-none">
-                  Sherief
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-zinc-900 font-sans leading-tight">
+                  {profile.name[lang]}
                 </h1>
               </div>
               
@@ -110,7 +116,7 @@ export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 pt-4 border-t border-zinc-200 text-xs text-zinc-500 font-mono">
               <div className="flex items-center gap-1.5">
                 <MapPin size={14} className="text-teal-600" />
-                <span>{lang === 'en' ? 'Giza, Egypt' : 'الجيزة، مصر'}</span>
+                <span>{profile.location ? profile.location[lang] : (lang === 'en' ? 'Giza, Egypt' : 'الجيزة، مصر')}</span>
               </div>
               <a href={profile.linkedin} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-zinc-800 transition-colors">
                 <Linkedin size={14} className="text-teal-600" />
@@ -164,10 +170,10 @@ export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
                 <div className="absolute bottom-3 left-3 right-3 bg-white/95 border border-zinc-150 p-3 rounded-2xl backdrop-blur-md flex items-center justify-between shadow-lg">
                   <div className="min-w-0 flex-1">
                     <h4 className="text-xs font-bold text-zinc-900 tracking-tight leading-none truncate">
-                      {lang === 'en' ? 'Abdelrahman Sherief' : 'عبدالرحمن شريف'}
+                      {profile.name[lang]}
                     </h4>
                     <p className="text-[9px] text-zinc-500 font-mono mt-1.5 truncate">
-                      Power BI • SQL • Automate
+                      {profile.heroOverlaySkills ? profile.heroOverlaySkills[lang] : 'Power BI • SQL • Automate'}
                     </p>
                   </div>
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0 ml-2"></span>
@@ -181,17 +187,17 @@ export default function Hero({ data, lang, isAdmin, onOpenEditor }: HeroProps) {
 
         {/* METRICS ROW UNDER HERO */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-16 md:mt-24" id="hero_stats_grid">
-          {highlightStats.map((stat, idx) => (
-            <div key={idx} className="bg-white border border-zinc-200 p-5 rounded-2xl flex flex-col justify-between hover:border-teal-500/50 hover:shadow-lg hover:shadow-teal-500/5 transition-all duration-300 group">
+          {statsList.map((stat, idx) => (
+            <div key={stat.id || idx} className="bg-white border border-zinc-200 p-5 rounded-2xl flex flex-col justify-between hover:border-teal-500/50 hover:shadow-lg hover:shadow-teal-500/5 transition-all duration-300 group">
               <div className="flex justify-between items-start mb-4">
                 <span className="text-xs font-mono text-zinc-400 font-bold">0{idx + 1}</span>
                 <div className="p-1.5 bg-zinc-50 rounded-lg border border-zinc-100 group-hover:border-teal-500/30 transition-colors">
-                  {stat.icon}
+                  {getStatIcon(stat.iconName)}
                 </div>
               </div>
               <div>
                 <p className="text-3xl font-bold font-mono tracking-tight text-zinc-900 group-hover:text-teal-600 transition-colors">
-                  {stat.value}<span className="text-base font-light text-zinc-500 ml-0.5">{stat.suffix}</span>
+                  {stat.value}<span className="text-base font-light text-zinc-500 ml-0.5">{stat.suffix[lang]}</span>
                 </p>
                 <p className="text-[11px] font-sans text-zinc-500 mt-1">{stat.label[lang]}</p>
               </div>

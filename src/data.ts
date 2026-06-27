@@ -21,7 +21,67 @@ export const defaultPortfolioData: PortfolioData = {
     avatar: "", // Will be represented by a clean styled initials avatar or a placeholder
     email: "abdelrahmansherief6@gmail.com",
     phone: "+201000000000", // Placeholder for actual phone, editable
-    linkedin: "https://www.linkedin.com/in/abdelrahman-fathy-sherief" // Editable
+    linkedin: "https://www.linkedin.com/in/abdelrahman-fathy-sherief", // Editable
+    location: {
+      en: "Giza, Egypt",
+      ar: "الجيزة، مصر"
+    },
+    aboutTitle: {
+      en: "Bridging Industrial Expertise with Data Analytics",
+      ar: "الربط بين الخبرة الصناعية العميقة وتحليل البيانات الذكية"
+    },
+    aboutSubtitle: {
+      en: "Professional Biography",
+      ar: "السيرة الذاتية المهنية"
+    },
+    whyMeTitle: {
+      en: "Why Work With Me?",
+      ar: "لماذا تعمل معي؟"
+    },
+    whyMeSubtitle: {
+      en: "Core Value Proposition",
+      ar: "القيمة المضافة والشراكة"
+    },
+    whyMeDescription: {
+      en: "Delivering measurable improvements and professional results at every phase of operations.",
+      ar: "تقديم تحسينات تشغيلية ملموسة ونتائج احترافية في كل مرحلة من مراحل التشغيل."
+    },
+    servicesTitle: {
+      en: "Specialized Professional Services",
+      ar: "خدمات استشارية وتنفيذية متخصصة"
+    },
+    servicesSubtitle: {
+      en: "Core Solutions",
+      ar: "مجالات التميز والخدمات"
+    },
+    servicesDescription: {
+      en: "Tailored end-to-end consulting and technical execution for industrial and commercial operations.",
+      ar: "خدمات برمجية وتحليلية مخصصة للشركات والقطاعات الصناعية لتحسين كفاءة التشغيل اليومي."
+    },
+    skillsTitle: {
+      en: "Expertise & Technical Stack",
+      ar: "القدرات الفنية والبرمجية"
+    },
+    skillsSubtitle: {
+      en: "Core Capabilities",
+      ar: "مصفوفة القدرات والمهارات"
+    },
+    skillsDescription: {
+      en: "A breakdown of specialized software, algorithms, and engineering frameworks utilized.",
+      ar: "تفصيل للمهارات البرمجية والأدوات التقنية التي أتقنها لخدمة التحول الرقمي وحلول الجودة."
+    },
+    projectsTitle: {
+      en: "Engineering Case Studies",
+      ar: "مشاريع هندسية وقصص نجاح حقيقية"
+    },
+    projectsSubtitle: {
+      en: "Interactive Portfolio",
+      ar: "معرض المشروعات والحلول المنجزة"
+    },
+    heroOverlaySkills: {
+      en: "Power BI • SQL • Automate",
+      ar: "Power BI • SQL • أتمتة"
+    }
   },
   achievements: [
     {
@@ -488,6 +548,36 @@ export const defaultPortfolioData: PortfolioData = {
         }
       ],
       image: "appsheet"
+    }
+  ],
+  stats: [
+    {
+      id: "stat_1",
+      value: "6+",
+      suffix: { en: "Years", ar: "سنوات خبرة" },
+      label: { en: "Industrial Expertise", ar: "خبرة في القطاع الصناعي" },
+      iconName: "Award"
+    },
+    {
+      id: "stat_2",
+      value: "95%",
+      suffix: { en: "", ar: "" },
+      label: { en: "Lab Utilization (from 70%)", ar: "استغلال المختبرات (من 70%)" },
+      iconName: "TrendingUp"
+    },
+    {
+      id: "stat_3",
+      value: "0",
+      suffix: { en: "%", ar: "%" },
+      label: { en: "Ledger Discrepancies", ar: "نسبة الفروقات التشغيلية" },
+      iconName: "Cpu"
+    },
+    {
+      id: "stat_4",
+      value: "100%",
+      suffix: { en: "", ar: "" },
+      label: { en: "Digital Shop floor Adoption", ar: "الاعتماد الرقمي للعمال" },
+      iconName: "Database"
     }
   ]
 };

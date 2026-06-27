@@ -28,7 +28,18 @@ export default function App() {
     const saved = localStorage.getItem('abdelrahman_portfolio_data');
     if (saved) {
       try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        if (parsed && typeof parsed === 'object') {
+          // Merge to avoid losing user's previous edits while instantly loading newly defined fields
+          return {
+            ...defaultPortfolioData,
+            ...parsed,
+            profile: {
+              ...defaultPortfolioData.profile,
+              ...(parsed.profile || {})
+            }
+          };
+        }
       } catch (e) {
         console.error("Failed to parse saved portfolio data", e);
       }
@@ -81,6 +92,7 @@ export default function App() {
       
       {/* Navigation Topbar */}
       <Navbar
+        data={portfolioData}
         lang={lang}
         setLang={setLang}
         isAdmin={isAdmin}
@@ -94,9 +106,6 @@ export default function App() {
         
         {/* Hero Banner Showcase */}
         <Hero data={portfolioData} lang={lang} isAdmin={isAdmin} onOpenEditor={() => setIsEditorOpen(true)} />
-
-        {/* Live Interactive Analytics Dashboard (Highlighting his BI expertise!) */}
-        <InteractiveDashboard lang={lang} />
 
         {/* About, Education & Credentials */}
         <About data={portfolioData} lang={lang} />
@@ -154,7 +163,9 @@ export default function App() {
           
           <div className="flex items-center gap-2.5">
             <div className="flex h-6 w-6 items-center justify-center rounded bg-zinc-100 border border-zinc-200 font-bold text-zinc-700 text-xs">
-              AS
+              {portfolioData.profile.name.en
+                ? portfolioData.profile.name.en.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase()
+                : 'AS'}
             </div>
             <p className="font-sans text-zinc-600">
               &copy; {new Date().getFullYear()} {portfolioData.profile.name[lang]}. {lang === 'en' ? 'All rights reserved.' : 'جميع الحقوق محفوظة.'}
@@ -163,7 +174,7 @@ export default function App() {
 
           {/* Social and Contact Footer */}
           <div className="flex flex-wrap items-center justify-center gap-6 text-zinc-600 font-sans">
-            <a href="mailto:abdelrahmansherief6@gmail.com" className="flex items-center gap-1.5 hover:text-zinc-900 transition-colors">
+            <a href={`mailto:${portfolioData.profile.email}`} className="flex items-center gap-1.5 hover:text-zinc-900 transition-colors">
               <Mail size={14} className="text-teal-600" />
               <span>{portfolioData.profile.email}</span>
             </a>

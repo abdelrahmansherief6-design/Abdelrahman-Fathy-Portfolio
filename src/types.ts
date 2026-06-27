@@ -71,6 +71,14 @@ export interface WhyWorkWithMeItem {
   iconName: string;
 }
 
+export interface HighlightStat {
+  id: string;
+  value: string;
+  suffix: BilingualText;
+  label: BilingualText;
+  iconName: string;
+}
+
 export interface PortfolioData {
   profile: {
     name: BilingualText;
@@ -81,6 +89,21 @@ export interface PortfolioData {
     email: string;
     phone: string;
     linkedin: string;
+    location?: BilingualText;
+    aboutTitle?: BilingualText;
+    aboutSubtitle?: BilingualText;
+    whyMeTitle?: BilingualText;
+    whyMeSubtitle?: BilingualText;
+    whyMeDescription?: BilingualText;
+    servicesTitle?: BilingualText;
+    servicesSubtitle?: BilingualText;
+    servicesDescription?: BilingualText;
+    skillsTitle?: BilingualText;
+    skillsSubtitle?: BilingualText;
+    skillsDescription?: BilingualText;
+    projectsTitle?: BilingualText;
+    projectsSubtitle?: BilingualText;
+    heroOverlaySkills?: BilingualText;
   };
   achievements: Achievement[];
   skills: Skill[];
@@ -89,4 +112,5 @@ export interface PortfolioData {
   education: EducationItem[];
   certificates: CertificateItem[];
   projects: Project[];
+  stats?: HighlightStat[];
 }
