@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Settings, Lock, Unlock, Mail, FileDown } from 'lucide-react';
+import { Globe, Settings, Lock, Unlock, Mail, FileDown, RefreshCw } from 'lucide-react';
 import { PortfolioData, BilingualText } from '../types';
 
 interface NavbarProps {
@@ -10,6 +10,7 @@ interface NavbarProps {
   setIsAdmin: (isAdmin: boolean) => void;
   onOpenEditor: () => void;
   onExportData: () => void;
+  onResetToDefault: () => void;
 }
 
 export default function Navbar({
@@ -19,7 +20,8 @@ export default function Navbar({
   isAdmin,
   setIsAdmin,
   onOpenEditor,
-  onExportData
+  onExportData,
+  onResetToDefault
 }: NavbarProps) {
   const [showAdminToast, setShowAdminToast] = useState(false);
 
@@ -99,6 +101,16 @@ export default function Navbar({
           >
             <FileDown size={14} className="text-teal-600" />
             <span className="hidden lg:inline">{lang === 'en' ? 'Backup JSON' : 'تصدير JSON'}</span>
+          </button>
+
+          {/* Reset/Sync with Code Button */}
+          <button
+            onClick={onResetToDefault}
+            title={lang === 'en' ? 'Reset to Latest Code Data' : 'التحديث لأحدث بيانات في الكود'}
+            className="flex items-center gap-1 text-[11px] font-mono px-2 py-1.5 rounded-lg border border-zinc-200 bg-white text-zinc-600 hover:text-zinc-800 hover:border-zinc-300 transition-all cursor-pointer"
+          >
+            <RefreshCw size={14} className="text-teal-600 animate-hover-spin" />
+            <span className="hidden lg:inline">{lang === 'en' ? 'Sync Code' : 'تحديث للكود'}</span>
           </button>
 
           {/* Language Toggle */}

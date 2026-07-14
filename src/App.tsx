@@ -14,7 +14,7 @@ import Skills from './components/Skills';
 import Projects from './components/Projects';
 import InteractiveDashboard from './components/InteractiveDashboard';
 import EditorModal from './components/EditorModal';
-import { FileUp, Info, Eye, Linkedin, Mail, Smartphone, MapPin, ExternalLink, ShieldCheck } from 'lucide-react';
+import { FileUp, Info, Eye, Linkedin, Mail, Smartphone, MapPin, ExternalLink, ShieldCheck, RefreshCw } from 'lucide-react';
 
 export default function App() {
   const [lang, setLang] = useState<'en' | 'ar'>('en');
@@ -51,6 +51,18 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem('abdelrahman_portfolio_data', JSON.stringify(portfolioData));
   }, [portfolioData]);
+
+  // Reset/Sync with the latest code-defined data
+  const handleResetToDefault = () => {
+    const confirmMsg = lang === 'en'
+      ? "Are you sure you want to update and sync all data with the latest code-defined defaults? (Any local unsaved browser edits will be overwritten with the latest updates from code)."
+      : "هل أنت متأكد من رغبتك في تحديث ومزامنة جميع البيانات مع أحدث قيم افتراضية تم برمجتها في الكود؟ (أي تعديلات محلية لم يتم تصديرها سيتم استبدالها بأحدث التحديثات من الكود).";
+    if (window.confirm(confirmMsg)) {
+      localStorage.removeItem('abdelrahman_portfolio_data');
+      setPortfolioData({ ...defaultPortfolioData });
+      alert(lang === 'en' ? 'Portfolio successfully updated to the latest code version!' : 'تم تحديث المحتوى بنجاح إلى أحدث نسخة من الكود!');
+    }
+  };
 
   // Export current portfolio state as a JSON backup file
   const handleExportData = () => {
@@ -99,6 +111,7 @@ export default function App() {
         setIsAdmin={setIsAdmin}
         onOpenEditor={() => setIsEditorOpen(true)}
         onExportData={handleExportData}
+        onResetToDefault={handleResetToDefault}
       />
 
       {/* Main Body Layout */}
@@ -146,12 +159,23 @@ export default function App() {
                 </p>
               </div>
             </div>
-            {/* Import Button */}
-            <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-700 font-semibold cursor-pointer select-none transition-all text-xs shrink-0">
-              <FileUp size={14} className="text-teal-600" />
-              <span>{lang === 'en' ? 'Restore JSON' : 'استيراد نسخة JSON'}</span>
-              <input type="file" accept=".json" onChange={handleImportData} className="hidden" />
-            </label>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              {/* Sync with Code Button */}
+              <button
+                onClick={handleResetToDefault}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-700 font-semibold cursor-pointer transition-all text-xs"
+              >
+                <RefreshCw size={14} className="text-teal-600 animate-hover-spin" />
+                <span>{lang === 'en' ? 'Sync Code Defaults' : 'تحديث لبيانات الكود'}</span>
+              </button>
+
+              {/* Import Button */}
+              <label className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-50 hover:bg-zinc-100 border border-zinc-200 text-zinc-700 font-semibold cursor-pointer select-none transition-all text-xs">
+                <FileUp size={14} className="text-teal-600" />
+                <span>{lang === 'en' ? 'Restore JSON' : 'استيراد نسخة JSON'}</span>
+                <input type="file" accept=".json" onChange={handleImportData} className="hidden" />
+              </label>
+            </div>
           </div>
         )}
 
