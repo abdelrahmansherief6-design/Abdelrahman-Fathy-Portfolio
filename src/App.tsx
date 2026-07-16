@@ -15,6 +15,7 @@ import Projects from './components/Projects';
 import InteractiveDashboard from './components/InteractiveDashboard';
 import EditorModal from './components/EditorModal';
 import { FileUp, Info, Eye, Linkedin, Mail, Smartphone, MapPin, ExternalLink, ShieldCheck, RefreshCw, Share2, Cloud } from 'lucide-react';
+import { compressPortfolioImages } from './utils';
 
 // Helper: Deep merge source into target
 function deepMerge(target: any, source: any): any {
@@ -154,7 +155,7 @@ export default function App() {
   useEffect(() => {
     const fetchCloudData = async () => {
       try {
-        const res = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3');
+        const res = await fetch('/api/load-cloud');
         if (!res.ok) return;
         const result = await res.json();
         if (result && result.data && typeof result.data === 'object' && Object.keys(result.data).length > 0) {
@@ -217,15 +218,17 @@ export default function App() {
   const handleSaveToCloud = async () => {
     setIsSavingToCloud(true);
     try {
-      const response = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3', {
-        method: 'PUT',
+      console.log("Compressing images before saving to cloud...");
+      const compressedData = await compressPortfolioImages(portfolioData);
+
+      const response = await fetch('/api/save-cloud', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: "Abdelrahman Fathy Portfolio Data",
-          data: portfolioData
-        })
+        body: JSON.stringify(compressedData)
       });
       if (response.ok) {
+        // Update local state with the compressed version so it matches what was uploaded and stays lightweight
+        setPortfolioData(compressedData);
         alert(lang === 'en'
           ? "🎉 Portfolio changes saved globally! Anyone visiting your link will now see your updated profile instantly!"
           : "🎉 تم حفظ جميع التعديلات في السحابة بنجاح! الآن أي شخص يزور موقعك سيرى بياناتك الجديدة وصورتك وتعديلاتك فوراً وبشكل تلقائي!");

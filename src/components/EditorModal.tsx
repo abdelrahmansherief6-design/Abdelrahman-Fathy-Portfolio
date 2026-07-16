@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Save, Plus, Trash2, Upload, FileText, Layout, ListPlus, Database, Award, GraduationCap, Briefcase, Sparkles, AlertCircle, HelpCircle, SlidersHorizontal } from 'lucide-react';
 import { PortfolioData, Project, Skill, Service, Metric, Achievement, EducationItem, CertificateItem, WhyWorkWithMeItem, HighlightStat } from '../types';
+import { compressBase64 } from '../utils';
 
 interface EditorModalProps {
   data: PortfolioData;
@@ -315,9 +316,10 @@ export default function EditorModal({
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       if (event.target?.result) {
-        setAvatar(event.target.result as string);
+        const compressed = await compressBase64(event.target.result as string, 500, 600, 0.75);
+        setAvatar(compressed);
       }
     };
     reader.readAsDataURL(file);
@@ -329,11 +331,12 @@ export default function EditorModal({
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (event) => {
+    reader.onload = async (event) => {
       if (event.target?.result) {
+        const compressed = await compressBase64(event.target.result as string, 800, 600, 0.7);
         setProjectForm(prev => ({
           ...prev,
-          imageSrc: event.target!.result as string
+          imageSrc: compressed
         }));
       }
     };
@@ -347,11 +350,12 @@ export default function EditorModal({
     
     Array.from(files).forEach((file: any) => {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = async (event) => {
         if (event.target?.result) {
+          const compressed = await compressBase64(event.target.result as string, 800, 600, 0.7);
           setProjectForm(prev => ({
             ...prev,
-            images: [...(prev.images || []), event.target!.result as string]
+            images: [...(prev.images || []), compressed]
           }));
         }
       };

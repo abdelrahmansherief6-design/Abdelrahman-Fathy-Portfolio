@@ -32,6 +32,54 @@ async function startServer() {
     }
   });
 
+  // API proxy to save portfolio data globally to api.restful-api.dev (server-side to avoid CORS)
+  app.post("/api/save-cloud", async (req, res) => {
+    try {
+      const data = req.body;
+      if (!data || typeof data !== 'object') {
+        return res.status(400).json({ error: "Invalid data format" });
+      }
+
+      console.log("Saving portfolio data to cloud server-side...");
+      const response = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: "Abdelrahman Fathy Portfolio Data",
+          data: data
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Cloud API responded with status ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("Successfully saved to cloud!");
+      return res.json({ success: true, result });
+    } catch (error: any) {
+      console.error("Error proxying save to cloud:", error);
+      return res.status(500).json({ error: error.message });
+    }
+  });
+
+  // API proxy to load portfolio data globally from api.restful-api.dev (server-side to avoid CORS)
+  app.get("/api/load-cloud", async (req, res) => {
+    try {
+      console.log("Loading portfolio data from cloud server-side...");
+      const response = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3');
+      if (!response.ok) {
+        throw new Error(`Cloud API responded with status ${response.status}`);
+      }
+
+      const result = await response.json();
+      return res.json(result);
+    } catch (error: any) {
+      console.error("Error proxying load from cloud:", error);
+      return res.status(500).json({ error: error.message });
+    }
+  });
+
   // Vite middleware for development
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
