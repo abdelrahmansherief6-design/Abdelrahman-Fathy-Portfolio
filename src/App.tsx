@@ -155,8 +155,8 @@ export default function App() {
   useEffect(() => {
     const fetchCloudData = async () => {
       try {
-        // Fetch directly from the cloud database to support static deployments like Vercel
-        const res = await fetch('https://extendsclass.com/api/json-storage/bin/edafdbe');
+        // Fetch from the cloud via our unified API proxy to avoid browser CORS and ISP blocks
+        const res = await fetch('/api/load-cloud');
         if (!res.ok) return;
         const result = await res.json();
         if (result && typeof result === 'object' && Object.keys(result).length > 0) {
@@ -222,9 +222,9 @@ export default function App() {
       console.log("Compressing images before saving to cloud...");
       const compressedData = await compressPortfolioImages(portfolioData);
 
-      // Save directly to the cloud database using PUT (works on any client, static Vercel, localhost, etc.)
-      const response = await fetch('https://extendsclass.com/api/json-storage/bin/edafdbe', {
-        method: 'PUT',
+      // Save to cloud via our unified API proxy (works flawlessly on local dev server and Vercel serverless)
+      const response = await fetch('/api/save-cloud', {
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(compressedData)
       });
