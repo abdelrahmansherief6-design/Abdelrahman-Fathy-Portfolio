@@ -155,7 +155,8 @@ export default function App() {
   useEffect(() => {
     const fetchCloudData = async () => {
       try {
-        const res = await fetch('/api/load-cloud');
+        // Fetch directly from the cloud database to support static deployments like Vercel
+        const res = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3');
         if (!res.ok) return;
         const result = await res.json();
         if (result && result.data && typeof result.data === 'object' && Object.keys(result.data).length > 0) {
@@ -221,10 +222,14 @@ export default function App() {
       console.log("Compressing images before saving to cloud...");
       const compressedData = await compressPortfolioImages(portfolioData);
 
-      const response = await fetch('/api/save-cloud', {
-        method: 'POST',
+      // Save directly to the cloud database using PUT (works on any client, static Vercel, localhost, etc.)
+      const response = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(compressedData)
+        body: JSON.stringify({
+          name: "Abdelrahman Fathy Portfolio Data",
+          data: compressedData
+        })
       });
       if (response.ok) {
         // Update local state with the compressed version so it matches what was uploaded and stays lightweight
