@@ -156,11 +156,11 @@ export default function App() {
     const fetchCloudData = async () => {
       try {
         // Fetch directly from the cloud database to support static deployments like Vercel
-        const res = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3');
+        const res = await fetch('https://extendsclass.com/api/json-storage/bin/edafdbe');
         if (!res.ok) return;
         const result = await res.json();
-        if (result && result.data && typeof result.data === 'object' && Object.keys(result.data).length > 0) {
-          const merged = deepMerge(defaultPortfolioData, result.data);
+        if (result && typeof result === 'object' && Object.keys(result).length > 0) {
+          const merged = deepMerge(defaultPortfolioData, result);
           setPortfolioData(merged);
           // Also sync with localStorage to keep page load super fast next time
           localStorage.setItem('abdelrahman_portfolio_data', JSON.stringify(merged));
@@ -223,13 +223,10 @@ export default function App() {
       const compressedData = await compressPortfolioImages(portfolioData);
 
       // Save directly to the cloud database using PUT (works on any client, static Vercel, localhost, etc.)
-      const response = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3', {
+      const response = await fetch('https://extendsclass.com/api/json-storage/bin/edafdbe', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: "Abdelrahman Fathy Portfolio Data",
-          data: compressedData
-        })
+        body: JSON.stringify(compressedData)
       });
       if (response.ok) {
         // Update local state with the compressed version so it matches what was uploaded and stays lightweight
