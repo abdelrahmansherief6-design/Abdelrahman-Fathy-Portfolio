@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Settings, Lock, Unlock, Mail, FileDown, RefreshCw } from 'lucide-react';
+import { Globe, Settings, Lock, Unlock, Mail, FileDown, RefreshCw, Share2 } from 'lucide-react';
 import { PortfolioData, BilingualText } from '../types';
 
 interface NavbarProps {
@@ -11,6 +11,7 @@ interface NavbarProps {
   onOpenEditor: () => void;
   onExportData: () => void;
   onResetToDefault: () => void;
+  onShareLink: () => void;
 }
 
 export default function Navbar({
@@ -21,7 +22,8 @@ export default function Navbar({
   setIsAdmin,
   onOpenEditor,
   onExportData,
-  onResetToDefault
+  onResetToDefault,
+  onShareLink
 }: NavbarProps) {
   const [showAdminToast, setShowAdminToast] = useState(false);
 
@@ -101,6 +103,16 @@ export default function Navbar({
           >
             <FileDown size={14} className="text-teal-600" />
             <span className="hidden lg:inline">{lang === 'en' ? 'Backup JSON' : 'تصدير JSON'}</span>
+          </button>
+
+          {/* Share/Copy Link Button */}
+          <button
+            onClick={onShareLink}
+            title={lang === 'en' ? 'Copy Shareable Link (with your custom edits!)' : 'نسخ رابط المشاركة مع تعديلاتك الحالية!'}
+            className="flex items-center gap-1 text-[11px] font-mono px-2 py-1.5 rounded-lg border border-teal-200 bg-teal-50 hover:bg-teal-100 hover:border-teal-300 text-teal-700 font-bold transition-all cursor-pointer shadow-sm"
+          >
+            <Share2 size={14} className="text-teal-600" />
+            <span className="hidden lg:inline">{lang === 'en' ? 'Share Portfolio' : 'مشاركة البورتفوليو'}</span>
           </button>
 
           {/* Reset/Sync with Code Button */}
