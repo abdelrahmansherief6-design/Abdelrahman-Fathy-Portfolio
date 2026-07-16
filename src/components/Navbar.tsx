@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Globe, Settings, Lock, Unlock, Mail, FileDown, RefreshCw, Share2 } from 'lucide-react';
+import { Globe, Settings, Lock, Unlock, Mail, FileDown, RefreshCw, Share2, Cloud } from 'lucide-react';
 import { PortfolioData, BilingualText } from '../types';
 
 interface NavbarProps {
@@ -12,6 +12,8 @@ interface NavbarProps {
   onExportData: () => void;
   onResetToDefault: () => void;
   onShareLink: () => void;
+  onSaveToCloud?: () => void;
+  isSavingToCloud?: boolean;
 }
 
 export default function Navbar({
@@ -23,7 +25,9 @@ export default function Navbar({
   onOpenEditor,
   onExportData,
   onResetToDefault,
-  onShareLink
+  onShareLink,
+  onSaveToCloud,
+  isSavingToCloud
 }: NavbarProps) {
   const [showAdminToast, setShowAdminToast] = useState(false);
 
@@ -155,6 +159,23 @@ export default function Navbar({
             >
               <Settings size={14} />
               <span>{lang === 'en' ? 'Manage' : 'تعديل المحتوى'}</span>
+            </button>
+          )}
+
+          {/* Cloud Save Button (only visible when admin is active) */}
+          {isAdmin && onSaveToCloud && (
+            <button
+              onClick={onSaveToCloud}
+              disabled={isSavingToCloud}
+              title={lang === 'en' ? 'Publish & Save Globally to Cloud' : 'نشر وحفظ التعديلات للجميع ع السحابة'}
+              className="flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:bg-emerald-800 disabled:cursor-not-allowed text-white font-semibold transition-all shadow-md shadow-emerald-600/10 cursor-pointer"
+            >
+              <Cloud size={14} className={isSavingToCloud ? "animate-bounce" : ""} />
+              <span>
+                {isSavingToCloud 
+                  ? (lang === 'en' ? 'Saving...' : 'جاري النشر...') 
+                  : (lang === 'en' ? 'Publish Cloud' : 'نشر للسحابة')}
+              </span>
             </button>
           )}
 

@@ -14,7 +14,7 @@ import Skills from './components/Skills';
 import Projects from './components/Projects';
 import InteractiveDashboard from './components/InteractiveDashboard';
 import EditorModal from './components/EditorModal';
-import { FileUp, Info, Eye, Linkedin, Mail, Smartphone, MapPin, ExternalLink, ShieldCheck, RefreshCw, Share2 } from 'lucide-react';
+import { FileUp, Info, Eye, Linkedin, Mail, Smartphone, MapPin, ExternalLink, ShieldCheck, RefreshCw, Share2, Cloud } from 'lucide-react';
 
 // Helper: Deep merge source into target
 function deepMerge(target: any, source: any): any {
@@ -98,6 +98,7 @@ export default function App() {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isAddingProject, setIsAddingProject] = useState<boolean>(false);
   const [isSharedView, setIsSharedView] = useState<boolean>(false);
+  const [isSavingToCloud, setIsSavingToCloud] = useState<boolean>(false);
 
   // Initialize Portfolio Data from URL parameter, localStorage, or defaults
   const [portfolioData, setPortfolioData] = useState<PortfolioData>(() => {
@@ -149,6 +150,32 @@ export default function App() {
     return defaultPortfolioData;
   });
 
+  // Load global portfolio data from the cloud on mount
+  useEffect(() => {
+    const fetchCloudData = async () => {
+      try {
+        const res = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3');
+        if (!res.ok) return;
+        const result = await res.json();
+        if (result && result.data && typeof result.data === 'object' && Object.keys(result.data).length > 0) {
+          const merged = deepMerge(defaultPortfolioData, result.data);
+          setPortfolioData(merged);
+          // Also sync with localStorage to keep page load super fast next time
+          localStorage.setItem('abdelrahman_portfolio_data', JSON.stringify(merged));
+        }
+      } catch (err) {
+        console.error("Error loading portfolio from cloud:", err);
+      }
+    };
+
+    // If there is no custom share query in the URL, load the global cloud data
+    // This ensures any standard visitor gets the latest live edits instantly!
+    const hasSharedParam = window.location.search.includes('d=') || window.location.hash.includes('d=');
+    if (!hasSharedParam) {
+      fetchCloudData();
+    }
+  }, []);
+
   // Check URL parameters on mount to determine if we are in shared view mode
   useEffect(() => {
     try {
@@ -185,6 +212,35 @@ export default function App() {
     };
     saveToCodebase();
   }, [portfolioData]);
+
+  // Save current state globally to cloud database (available to all visitors)
+  const handleSaveToCloud = async () => {
+    setIsSavingToCloud(true);
+    try {
+      const response = await fetch('https://api.restful-api.dev/objects/ff8081819d82fab6019f6ad324c26ed3', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: "Abdelrahman Fathy Portfolio Data",
+          data: portfolioData
+        })
+      });
+      if (response.ok) {
+        alert(lang === 'en'
+          ? "🎉 Portfolio changes saved globally! Anyone visiting your link will now see your updated profile instantly!"
+          : "🎉 تم حفظ جميع التعديلات في السحابة بنجاح! الآن أي شخص يزور موقعك سيرى بياناتك الجديدة وصورتك وتعديلاتك فوراً وبشكل تلقائي!");
+      } else {
+        throw new Error("HTTP error " + response.status);
+      }
+    } catch (error) {
+      console.error("Failed to save to cloud:", error);
+      alert(lang === 'en'
+        ? "❌ Failed to save to cloud. Please check your internet connection."
+        : "❌ فشل حفظ التعديلات في السحابة. يرجى التحقق من اتصالك بالإنترنت.");
+    } finally {
+      setIsSavingToCloud(false);
+    }
+  };
 
   // Reset/Sync with the latest code-defined data
   const handleResetToDefault = () => {
@@ -312,6 +368,8 @@ export default function App() {
         onExportData={handleExportData}
         onResetToDefault={handleResetToDefault}
         onShareLink={handleShareLink}
+        onSaveToCloud={handleSaveToCloud}
+        isSavingToCloud={isSavingToCloud}
       />
 
       {/* Main Body Layout */}
@@ -347,18 +405,34 @@ export default function App() {
 
         {/* Quick developer note (visible only to editors or admins as a helpful tip) */}
         {isAdmin && (
-          <div className="my-12 p-5 bg-white border border-zinc-200 rounded-2xl flex flex-col gap-4 text-xs shadow-sm">
-            <div className="flex items-start gap-3">
-              <Info className="text-teal-600 shrink-0 mt-0.5" size={18} />
-              <div className="space-y-1">
-                <p className="font-bold text-zinc-950 text-sm">
-                  {lang === 'en' ? '🚀 Real-time Codebase Sync Enabled!' : '🚀 تم تفعيل المزامنة المباشرة مع الكود!'}
-                </p>
-                <p className="text-zinc-600 leading-relaxed">
-                  {lang === 'en'
-                    ? 'All edits you make here in AI Studio are immediately written to your workspace file (src/data.ts) in real-time. When you export or deploy this repository to Vercel/GitHub, your custom data will automatically become the permanent default layout for all visitors!'
-                    : 'أي تعديلات تقوم بها هنا في لوحة التحكم يتم كتابتها فوراً في ملف المشروع الفعلي (src/data.ts) في نفس اللحظة. عندما تقوم بتصدير الكود أو نشره على Vercel أو GitHub، ستصبح بياناتك المعدلة (بما فيها الصورة ورقم الهاتف) هي المظهر الافتراضي الدائم لكل زوار موقعك!'}
-                </p>
+          <div className="my-12 p-6 bg-white border border-zinc-200 rounded-2xl flex flex-col gap-5 text-xs shadow-sm">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="flex items-start gap-3">
+                <Info className="text-teal-600 shrink-0 mt-0.5" size={18} />
+                <div className="space-y-1">
+                  <p className="font-bold text-zinc-950 text-sm">
+                    {lang === 'en' ? '🚀 Real-time Codebase Sync Enabled!' : '🚀 تم تفعيل المزامنة المباشرة مع الكود!'}
+                  </p>
+                  <p className="text-zinc-600 leading-relaxed">
+                    {lang === 'en'
+                      ? 'All edits you make here in AI Studio are immediately written to your workspace file (src/data.ts) in real-time. When you export or deploy this repository to Vercel/GitHub, your custom data will automatically become the permanent default layout for all visitors!'
+                      : 'أي تعديلات تقوم بها هنا في لوحة التحكم يتم كتابتها فوراً في ملف المشروع الفعلي (src/data.ts) في نفس اللحظة. عندما تقوم بتصدير الكود أو نشره على Vercel أو GitHub، ستصبح بياناتك المعدلة (بما فيها الصورة ورقم الهاتف) هي المظهر الافتراضي الدائم لكل زوار موقعك!'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3 border-t md:border-t-0 md:border-l border-zinc-100 pt-4 md:pt-0 md:pl-6">
+                <Cloud className="text-emerald-600 shrink-0 mt-0.5" size={18} />
+                <div className="space-y-1">
+                  <p className="font-bold text-zinc-950 text-sm">
+                    {lang === 'en' ? '🌐 Global Cloud Database Storage Active!' : '🌐 تم ربط وتفعيل السحابة العامة لجميع الزوار!'}
+                  </p>
+                  <p className="text-zinc-600 leading-relaxed">
+                    {lang === 'en'
+                      ? 'Your portfolio is now connected to a persistent, public global cloud database. Click "Publish Globally to Cloud" below to instantly update the live site for all visitors across the internet!'
+                      : 'تم ربط البورتفوليو بقاعدة بيانات سحابية عامة ودائمة. انقر فوق زر "نشر وحفظ للجميع ع السحابة" بالأسفل لحفظ تعديلاتك الحالية لجميع زوار موقعك عبر الإنترنت فوراً بدون الحاجة لأي نسخ روابط معقدة!'}
+                  </p>
+                </div>
               </div>
             </div>
             
@@ -366,16 +440,30 @@ export default function App() {
 
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="text-zinc-500 font-mono text-[10px]">
-                {lang === 'en' ? 'Target: /src/data.ts (Live Updates)' : 'المستهدف: /src/data.ts (تحديثات مباشرة)'}
+                {lang === 'en' ? 'Cloud Server: Connected (Active)' : 'خادم السحابة: متصل وجاهز'}
               </div>
               <div className="flex flex-wrap items-center gap-2">
+                {/* Save Globally to Cloud Button */}
+                <button
+                  onClick={handleSaveToCloud}
+                  disabled={isSavingToCloud}
+                  className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 disabled:from-zinc-400 disabled:to-zinc-500 text-white font-bold cursor-pointer transition-all text-xs shadow-md shadow-emerald-600/10"
+                >
+                  <Cloud size={14} className={isSavingToCloud ? "animate-bounce" : ""} />
+                  <span>
+                    {isSavingToCloud
+                      ? (lang === 'en' ? 'Publishing to Cloud...' : 'جاري الحفظ والنشر ع السحابة...')
+                      : (lang === 'en' ? 'Publish Globally to Cloud' : 'نشر وحفظ التعديلات للجميع ع السحابة')}
+                  </span>
+                </button>
+
                 {/* Share Portfolio Button */}
                 <button
                   onClick={handleShareLink}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-semibold cursor-pointer transition-all text-xs shadow-sm"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-700 font-semibold cursor-pointer transition-all text-xs"
                 >
                   <Share2 size={14} />
-                  <span>{lang === 'en' ? 'Copy Shareable Link' : 'نسخ رابط مشاركة بورتفوليو مخصص'}</span>
+                  <span>{lang === 'en' ? 'Copy Shareable Link' : 'نسخ رابط بورتفوليو مخصص'}</span>
                 </button>
 
                 {/* Sync with Code Button */}
